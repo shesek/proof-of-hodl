@@ -1,0 +1,8 @@
+extend layout
+
+block content
+  h3= vote.text
+
+  ul
+    for option in vote.options
+      li= option

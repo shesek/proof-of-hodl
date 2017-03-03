@@ -1,0 +1,6 @@
+extend layout
+
+block content
+  ul
+    for vote in votes
+      li: a(href="/"+vote.id)= vote.text
