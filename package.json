@@ -2,5 +2,9 @@
   "name": "proof-of-hodl",
   "version": "0.1.0",
   "author": "Nadav Ivgi",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcoin": "^1.0.0-beta.8",
+    "yargs": "^6.6.0"
+  }
 }
