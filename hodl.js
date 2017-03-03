@@ -13,9 +13,9 @@ const rev = str => str.match(/../g).reverse().join('')
 
 const makeEncumberScript = (pubkey, rlocktime) => {
   const script = new Script
-  //script.push(new BN(rlocktime))
-  //script.push(OP_CHECKSEQUENCEVERIFY)
-  //script.push(OP_DROP)
+  script.push(new BN(rlocktime))
+  script.push(OP_CHECKSEQUENCEVERIFY)
+  script.push(OP_DROP)
   script.push(pubkey.publicKey)
   script.push(OP_CHECKSIG)
   script.compile()
@@ -24,7 +24,7 @@ const makeEncumberScript = (pubkey, rlocktime) => {
 
 const makeUnlockTx = (coin, redeemScript, rlocktime, refundAddr) => TX.fromOptions({
   version: 2
-, inputs: [ { prevout: coin, sequence: rlocktime, script: [ OP_0, redeemScript.toRaw() ] } ]
+, inputs: [ { prevout: coin, sequence: rlocktime, script: [ OP_0, OP_0, redeemScript.toRaw() ] } ]
 , outputs: [ { address: refundAddr, value: coin.value - FEE } ]
 })
 
@@ -57,7 +57,6 @@ exports.unlock = ({ privkey, rlocktime, msg }, { txid, vout, value }, refundAddr
       , redeemScript = makeEncumberScript(mprivkey.toPublic(), rlocktime)
       , outputScript = Script.fromScripthash(redeemScript.hash160())
       , coin         = Coin.fromOptions({ hash: rev(txid), index: vout, script: outputScript, value })
-  console.log('coin value:',+coin.value,coin.value)
 
   return signUnlockTx(mprivkey, makeUnlockTx(coin, redeemScript, rlocktime, refundAddr), 0, coin)
 }
