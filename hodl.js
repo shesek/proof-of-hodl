@@ -56,11 +56,11 @@ exports.lock = (rlocktime, msg) => {
   }
 }
 
-exports.unlock = ({ privkey, rlocktime, msg }, { txid, vout, value }, refundAddr) => {
+exports.unlock = ({ privkey, rlocktime, msg }, c, refundAddr) => {
   const mprivkey     = deriveMsgKey(PrivateKey.fromBase58(privkey), msg)
       , redeemScript = makeEncumberScript(mprivkey.toPublic(), rlocktime)
       , outputScript = Script.fromScripthash(redeemScript.hash160())
-      , coin         = Coin.fromOptions({ hash: rev(txid), index: vout, script: outputScript, value })
+      , coin         = Coin.isCoin(c) ? c : Coin.fromOptions({ hash: rev(c.txid), index: c.vout, script: outputScript, value: c.value })
 
   return signUnlockTx(mprivkey, redeemScript, makeUnlockTx(coin, redeemScript, rlocktime, refundAddr), 0, coin)
 }

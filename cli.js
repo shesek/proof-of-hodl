@@ -1,28 +1,25 @@
 const yargs = require('yargs')
     , inquirer = require('inquirer')
     , debug = require('debug')('proof-of-hodl')
+    , { iferr, throwerr } = require('iferr')
     , { lock, unlock } = require('./hodl')
+    , watchAddr = require('./watch-addr')
+
 
 require('colors')
 
 yargs
   .usage('$0 <cmd> [args]')
-  .command('lock [msg]', 'create lock proof', { duration: { default: 100 } }, argv => {
+  .command('lock [msg]', 'create lock proof', { duration: { required: true }, refund: { required: true  } }, argv => {
     const lockbox = lock(+argv.duration, argv.msg)
 
     //console.log('Ephemeral private key:'.cyan, lockbox.privkey)
     debug('encumberScript:', lockbox.redeemScript)
     console.log('Please deposit funds to:'.cyan, lockbox.address)
 
-    inquirer.prompt([
-      { name: 'txid', message: 'txid' }
-    , { name: 'vout', message: 'vout' }
-    , { name: 'value', message: 'value' }
-    , { name: 'refund_addr', message: 'refund addr' }
-    ]).then(answers => {
-      const coin = { txid: answers.txid, vout: +answers.vout, value: +answers.value }
-          , tx = unlock(lockbox, coin, answers.refund_addr)
-      console.log('tx', tx.toRaw().toString('hex'))
+    watchAddr(lockbox.address, coin => {
+      const tx = unlock(lockbox, coin, argv.refund)
+      console.log('Refund tx, keep this!'.red, tx.toRaw().toString('hex'))
     })
   })
   .help()
