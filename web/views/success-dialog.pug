@@ -5,9 +5,9 @@
         button.close(type='button', data-dismiss='modal'): span(aria-hidden='true') &times;
         h4.modal-title Voted successfully!
       .modal-body
-        p #[strong Proposition:] #{question.text}
+        p #[strong Question:] #{question.text}
         p #[strong Your vote:] #{ question.options[option_id].text }
-        p #[strong Vote weight:] #{ amount } BTC x #{ (lockbox.rlocktime/144).toFixed(1) } days = 
+        p #[strong Vote weight:] #{ amount } BTC x #{ (lockbox.rlocktime/144).toFixed(2) } days = 
           strong #{(weight/144).toFixed(2)} #[abbr(title='Bitcoin Days Locked') BDL]
 
         p To reclaim your funds, #[strong keep a safe backup] of your refund transaction and broadcast it in #{ lockbox.rlocktime } blocks:

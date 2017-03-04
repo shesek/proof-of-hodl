@@ -5,7 +5,7 @@
         button.close(type='button', data-dismiss='modal'): span(aria-hidden='true') &times;
         h4.modal-title Vote Deposit
       .modal-body
-        p #[strong Proposition:] #{question.text}
+        p #[strong Question:] #{question.text}
         p #[strong Your vote:] #{ question.options[option_id].text }
         p #[strong Vote weight:] #{ amount } BTC x #{ (lockbox.rlocktime/144).toFixed(2) } days = 
           strong #{(weight/144).toFixed(2)} #[abbr(title='Bitcoin Days Locked') BDL]

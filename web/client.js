@@ -13,6 +13,7 @@ const request = require('superagent')
     , { coin: Coin, amount: Amount } = require('bcoin')
     , { throwerr } = require('iferr')
     , { lock, unlock } = require('../hodl')
+    , { makeVoteMsg } = require('./util')
 
 const payDialog     = require('./views/pay-dialog.pug')
 const successDialog = require('./views/success-dialog.pug')
@@ -28,9 +29,10 @@ $('form[data-question]').submit(e => {
       , rlocktime = dur_type == 'days' ?0|duration*144 : duration
       , refund    = +form.find('[name=refund_addr]').val()
       , option_id = form.find('[name=answer]').val()
+      , option    = question.options[option_id]
       , weight    = amount * rlocktime
 
-      , msg       = JSON.stringify([ question, option_id ])
+      , msg       = makeVoteMsg(question, option)
       , lockbox   = lock(rlocktime, msg)
 
       , pay_uri   = `bitcoin:${ lockbox.address  }?amount=${ amount }`
@@ -50,7 +52,6 @@ $('form[data-question]').submit(e => {
     dialog.modal('hide').remove()
 
     $(successDialog({ question, option_id, coin, amount, weight, lockbox, rawtx: tx.toRaw().toString('hex') })).modal()
-    console.log('tx', tx.toRaw().toString('hex'))
   }))
 
 })
