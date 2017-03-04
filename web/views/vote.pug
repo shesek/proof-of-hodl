@@ -5,7 +5,6 @@ block content
     h3= question.text
 
     form(data-question=question)
-      - console.log('q',questions)
       for option, i in question.options
         .radio: label(for='option-'+option.id)
           input(type='radio', name='answer', value=option.id, id='option-'+option.id, required)

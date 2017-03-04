@@ -28,7 +28,7 @@ $('form[data-question]').submit(e => {
       , duration  = +form.find('[name=duration]').val()
       , rlocktime = dur_type == 'days' ?0|duration*144 : duration
       , refund    = +form.find('[name=refund_addr]').val()
-      , option_id = form.find('[name=answer]').val()
+      , option_id = form.find('[name=answer]:checked').val()
       , option    = question.options[option_id]
       , weight    = amount * rlocktime
 
@@ -44,14 +44,21 @@ $('form[data-question]').submit(e => {
 
   request('/wait/'+lockbox.address, throwerr(res => {
     if (!res.ok) return alert('payment time out')
-    const coin   = Coin.fromJSON(res.body.coin)
-        , weight = (coin.value * lockbox.rlocktime / 100000000).toFixed(2)
-        , amount = Amount.btc(coin.value)
-        , tx     = unlock(lockbox, coin, refund)
+
+    const coin     = Coin.fromJSON(res.body.coin)
+        , locktx   = res.body.tx
+        , weight   = (coin.value * lockbox.rlocktime / 100000000).toFixed(2)
+        , amount   = Amount.btc(coin.value)
+        , refundtx = unlock(lockbox, coin, refund)
+        , rawtx    = refundtx.toRaw().toString('hex')
 
     dialog.modal('hide').remove()
 
-    $(successDialog({ question, option_id, coin, amount, weight, lockbox, rawtx: tx.toRaw().toString('hex') })).modal()
+    $(successDialog({ question, option_id, coin, amount, weight, lockbox, rawtx })).modal()
+
+    request.post(`/q/${ question.id }/${ option.id }/vote`)
+      .send({ tx: locktx, pubkey: lockbox.pubkey, rlocktime: lockbox.rlocktime, refundtx: rawtx })
+      .end(throwerr(res => console.log('got reply', res.body)))
   }))
 
 })

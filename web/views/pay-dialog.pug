@@ -10,8 +10,8 @@
         p #[strong Vote weight:] #{ amount } BTC x #{ (lockbox.rlocktime/144).toFixed(2) } days = 
           strong #{(weight/144).toFixed(2)} #[abbr(title='Bitcoin Days Locked') BDL]
 
-        p To complete your vote, send #{ amount } BTC to #{ lockbox.address }.
+        p To cast your vote, send #[strong= amount] BTC to #[strong= lockbox.address].
         .text-center: img(src=pay_qr)
 
       .modal-footer
-        button.btn.btn-default(type='button', data-dismiss='modal') Close dialog
+        button.btn.btn-default(type='button', data-dismiss='modal') Cancel

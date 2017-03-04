@@ -1,29 +1,51 @@
 extend layout
 
 block content
-  .container: .row: .col-md-8
-    h3= question.text
+  - opts = Object.keys(question.options)
+  - alltotal = opts.reduce((total, oid) => +total + (+totals[oid] || 0), 0)
+  - percents = opts.reduce((o, oid) => (o[oid]=((totals[oid]||0)/alltotal*100).toFixed(1), o), {})
+  - grouped_votes = opts.map(oid => ({ option: question.options[oid], votes: votes.filter(v => v.option_id == oid) }))
 
-    form(data-question=question)
-      for option in question.options
-        .radio: label(for='option-'+option.id)
-          input(type='radio', name='answer', value=option.id, id='option-'+option.id, required)
-          = option.text
-      .row
-        .form-group.col-md-6
-          label(for='amount') Deposit amount
-          .input-group
-            input#amount.form-control(type='number', name='amount', required)
-            span.input-group-addon BTC
-        .form-group.col-md-6
-          label(for='duration') Lock time
-          .input-group
-            input#duration.form-control(type='number', name='duration', required)
-            span.input-group-addon: select(name='duration_type')
-              option(value=days) days
-              option(value=blocks) blocks
-      .form-group
-        label(for='refund_addr') Refund address
-        input#refund_addr.form-control(type='text', name='refund_addr', required)
+  .container
+    .row.question
+      .col-md-12.results
+        h2= question.text
+        .row
+          for vote_group in grouped_votes
+            - option = vote_group.option
+            .col-md-6
+              h4 #{ option.text } &mdash; #{ (+formatSatoshis((totals[option.id] || 0)/144)).toFixed(2) } #[abbr(title='Bitcoin Days Locked') BDL] (#{ percents[option.id] }%)
+              button.btn.btn-primary(data-vote=option.id) Vote
+              ul
+                for vote in vote_group.votes
+                  li #{ formatSatoshis(vote.value)  } BTC x #{ (vote.rlocktime/144).toFixed(2) } days = #{ (+formatSatoshis(vote.weight_bdl)).toFixed(2) } BDL<br>#[span.text-muted= vague(vote.timestamp)]
+                if !vote_group.votes.length
+                  li.text-muted: em (empty)
 
-      input.btn.btn-primary(type='submit', value='Vote')
+
+      //-.col-md-4
+        form(data-question=question)
+          fieldset
+            legend Cast your vote
+            for option in question.options
+              .radio: label(for='option-'+option.id)
+                input(type='radio', name='answer', value=option.id, id='option-'+option.id, required)
+                = option.text
+            .row
+              .form-group.col-md-6
+                label(for='amount') Deposit amount
+                .input-group
+                  input#amount.form-control(type='number', name='amount', required)
+                  span.input-group-addon BTC
+              .form-group.col-md-6
+                label(for='duration') Lock time
+                .input-group
+                  input#duration.form-control(type='number', name='duration', required)
+                  span.input-group-addon: select(name='duration_type')
+                    option(value=days) days
+                    option(value=blocks) blocks
+            .form-group
+              label(for='refund_addr') Refund address
+              input#refund_addr.form-control(type='text', name='refund_addr', required)
+
+            input.btn.btn-primary(type='submit', value='Vote')

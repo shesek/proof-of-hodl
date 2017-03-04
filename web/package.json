@@ -21,12 +21,14 @@
     "iferr": "^0.1.5",
     "marked": "^0.3.6",
     "morgan": "^1.8.1",
+    "move-decimal-point": "0.0.1",
     "pg": "^6.1.2",
     "pug": "^2.0.0-beta11",
     "pugify": "^2.1.0",
     "qruri": "0.0.3",
     "socket.io": "^1.7.3",
     "socket.io-client": "^1.7.3",
-    "superagent": "^3.5.0"
+    "superagent": "^3.5.0",
+    "vague-time": "^2.4.0"
   }
 }
