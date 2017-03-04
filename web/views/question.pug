@@ -31,7 +31,8 @@ block content
               button.btn.btn-success(data-vote=option.id) Vote
               ul
                 for vote in vote_group.votes
-                  li #{ formatSatoshis(vote.value) } BTC x #{ round(vote.rlocktime/144, 0.001) } days = #{ round(+formatSatoshis(vote.weight_bdl), 0.001) } BDL
+                  li #{ formatSatoshis(vote.value) } BTC x #{ round(vote.rlocktime/144, 0.001) } days = #{ round(+formatSatoshis(vote.weight_bdl), 0.001) } 
+                    abbr(title='Bitcoin Days Locked') BDL
                     | <br>#[span.text-muted= vague(vote.timestamp)]
 
 
