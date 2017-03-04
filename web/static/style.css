@@ -1,6 +1,12 @@
 pre{ word-break: break-all; white-space: normal  }
+a, a:hover { color: #158cba }
+/*.navbar-brand { font-size: 2em }*/
+.navbar { background: #222 }
+.navbar-brand {  color: #fff !important }
+.homepage ul { font-size: 2em }
 
-.homepage ul { font-size: 1.4em }
+.btn-success, .btn-primary, .btn-primary:hover { background: #000 }
+
 .results { text-align: center }
 .results h2 { margin-bottom: 1em }
 .results ul { list-style: none; padding-left: 0 }

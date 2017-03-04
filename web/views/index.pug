@@ -6,5 +6,5 @@ block content
     ul
       for question in questions
         li
-          a(href="/q/"+question.id) #{ question.text }
+          a(href="/q/"+question.id) #{ question.text } 
           | &mdash; #{ round(+formatSatoshis(question.total_weight/144), 0.01) } #[abbr(title='Bitcoin Days Locked') BDL]
