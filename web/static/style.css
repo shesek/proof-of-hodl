@@ -1,9 +1,12 @@
 pre{ word-break: break-all; white-space: normal  }
 
+.homepage ul { font-size: 1.4em }
 .results { text-align: center }
 .results h2 { margin-bottom: 1em }
 .results ul { list-style: none; padding-left: 0 }
 .results button { margin: 1em 0  }
+
+.question .opt { margin-bottom: 5em }
 
 .navbar-header {
     float: left;

@@ -1,7 +1,10 @@
 extend layout
 
 block content
-  .container
+  .container.homepage
+    h2 Latest Questions
     ul
       for question in questions
-        li: a(href="/"+question.id)= question.text
+        li
+          a(href="/q/"+question.id) #{ question.text }
+          | &mdash; #{ round(+formatSatoshis(question.total_weight/144), 0.01) } #[abbr(title='Bitcoin Days Locked') BDL]

@@ -1,14 +1,14 @@
 .modal.fade.vote-dialog
-  .modal-dialog
-    .modal-content
-      .modal-header
-        button.close(type='button', data-dismiss='modal'): span(aria-hidden='true') &times;
-        h4.modal-title Cast Vote: #[em= question.options[option_id].text]
-      .modal-body
-        //p #[strong Question:] #{question.text}
-        //p #[strong Your vote:] #{ question.options[option_id].text }
+  form(data-question=question.id)
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal'): span(aria-hidden='true') &times;
+          h4.modal-title Cast Vote: #[em= question.options[option_id].text]
+        .modal-body
+          //p #[strong Question:] #{question.text}
+          //p #[strong Your vote:] #{ question.options[option_id].text }
 
-        form(data-question=question.id)
           input(name='answer', type='hidden', value=option_id)
           .row
             .form-group.col-md-6
@@ -19,17 +19,17 @@
             .form-group.col-md-6
               label(for='duration') Lock time
               .input-group
-                input#duration.form-control(type='number', name='duration', required)
+                input#duration.form-control(type='number', name='duration', max='455', min='0.001', steps='0.001', required)
                 span.input-group-addon days
                 input(type='hidden', name='duration_type', value='days')
-                //-: select(name='duration_type')
+                //-select(name='duration_type')
                   option(value=days) days
                   option(value=blocks) blocks
           .form-group
             label(for='refund_addr') Refund address
             input#refund_addr.form-control(type='text', name='refund_addr', required)
 
-          input.btn.btn-primary(type='submit', value='Vote')
 
-      .modal-footer
-        button.btn.btn-default(type='button', data-dismiss='modal') Cancel
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal') Cancel
+          input.btn.btn-primary(type='submit', value='Continue')

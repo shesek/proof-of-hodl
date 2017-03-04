@@ -1,13 +1,18 @@
 extend layout
 
+append vars
+  - page_title = question.text
+
 append head
   meta(name='question', content=question)
 
 block content
   - opts = Object.keys(question.options)
   - alltotal = opts.reduce((total, oid) => +total + (+totals[oid] || 0), 0)
-  - percents = opts.reduce((o, oid) => (o[oid]=round((totals[oid]||0)/alltotal*100, 0.1), o), {})
+  - percents = !alltotal ? {} : opts.reduce((o, oid) => (o[oid]=round((totals[oid]||0)/alltotal*100, 0.1), o), {})
   - grouped_votes = opts.map(oid => ({ option: question.options[oid], votes: votes.filter(v => v.option_id == oid) }))
+  - col_size = opts.length >= 3 ? 4 : 6
+  - opt_heading = col_size == 6 ? 'h3' : 'h4'
 
   .container
     .row.question
@@ -16,14 +21,18 @@ block content
         .row
           for vote_group in grouped_votes
             - option = vote_group.option
-            .col-md-6
-              h3 #{ option.text } &mdash; #{ round(+formatSatoshis(totals[option.id] || 0)/144, 0.01) } #[abbr(title='Bitcoin Days Locked') BDL] (#{ percents[option.id] }%)
+            div(class='col-md-'+col_size).opt
+              #{opt_heading} #{ option.text } &mdash;
+                if totals[option.id]
+                  | #{ round(+formatSatoshis(totals[option.id] || 0)/144, 0.01) } #[abbr(title='Bitcoin Days Locked') BDL]
+                  |  (#{ percents[option.id] }%)
+                else
+                  em no votes
               button.btn.btn-primary(data-vote=option.id) Vote
               ul
                 for vote in vote_group.votes
-                  li #{ formatSatoshis(vote.value) } BTC x #{ round(vote.rlocktime/144, 0.001) } days = #{ round(+formatSatoshis(vote.weight_bdl), 0.001) } BDL<br>#[span.text-muted= vague(vote.timestamp)]
-                if !vote_group.votes.length
-                  li.text-muted: em (empty)
+                  li #{ formatSatoshis(vote.value) } BTC x #{ round(vote.rlocktime/144, 0.001) } days = #{ round(+formatSatoshis(vote.weight_bdl), 0.001) } BDL
+                    | <br>#[span.text-muted= vague(vote.timestamp)]
 
 
       //-.col-md-4
