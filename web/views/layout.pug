@@ -2,10 +2,37 @@ block vars
   - page_title = null
 
 doctype html5
+html
+  head
+    block head
+      meta(charset='utf-8')
+      meta(http-equiv='X-UA-Compatible', content='IE=edge')
+      meta(name='viewport', content='width=device-width, initial-scale=1')
+      base(href=settings.url)
+      title #{ page_title ? page_title+' - ':'' }  Proof Of Hodl
 
-title #{ page_title ? page_title+' - ':'' }  Proof Of Hodl
+      link(href='bootstrap/css/bootstrap.min.css', type='text/css', rel='stylesheet')
+      link(href='style.css', type='text/css', rel='stylesheet')
 
-body
-  h1 Proof Of Hodl
+  body
+    nav.navbar.navbar-default: .container
+      .navbar-header
+        button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar', aria-expanded='false', aria-controls='navbar')
+          span.sr-only Toggle navigation
+          | #[span.icon-bar]#[span.icon-bar]#[span.icon-bar]
 
-  block content
+        a.navbar-brand(href=settings.url) Proof Of HODL
+
+      //-#navbar.navbar-collapse.collapse.navbar-right
+        ul.nav.navbar-nav
+          li(class=(active_page=='faq'?'active':'')): a(href='faq.html') FAQ
+          li: a(href='http://slack.coloredcoins.org/') Slack
+          li: a(href='mailto:contact@colu.com') Feedback
+
+    block content
+
+    block scripts
+      script(src='jquery-3.1.1.slim.min.js')
+      script(src='bootstrap/js/bootstrap.mini.js')
+      script(src='script.js')
+
