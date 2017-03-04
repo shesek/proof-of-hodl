@@ -21,7 +21,6 @@
     "iferr": "^0.1.5",
     "marked": "^0.3.6",
     "morgan": "^1.8.1",
-    "move-decimal-point": "0.0.1",
     "pg": "^6.1.2",
     "pug": "^2.0.0-beta11",
     "pugify": "^2.1.0",

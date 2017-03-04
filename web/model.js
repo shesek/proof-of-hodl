@@ -28,11 +28,16 @@ module.exports = _ => {
     client.query('SELECT * FROM vote_totals WHERE question_id=$1', [ question_id ], iferr(cb, result =>
       cb(null, result.rows.reduce((o, t) => (o[t.option_id]=t.total, o), {}))))
 
+  const loadRefundTxs = cb =>
+    client.query('SELECT address, txid, refundtx FROM vote ORDER BY id DESC', iferr(cb, result =>
+      cb(null, result.rows)
+    ))
+
   const saveVote = (vote, cb) => (console.log(vote),
     client.query(`INSERT INTO vote (question_id, option_id, value, rlocktime, address, txid, locktx, refundtx)
                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
                , [ vote.question_id, vote.option_id, vote.value, vote.rlocktime, vote.address, vote.txid, vote.locktx, vote.refundtx ]
                , cb))
 
-  return { listQuestions, loadQuestion, loadQuestionVotes, loadQuestionTotals, saveVote }
+  return { listQuestions, loadQuestion, loadQuestionVotes, loadQuestionTotals, loadRefundTxs, saveVote }
 }

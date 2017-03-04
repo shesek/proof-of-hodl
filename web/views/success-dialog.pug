@@ -7,8 +7,8 @@
       .modal-body
         p #[strong Question:] #{question.text}
         p #[strong Your vote:] #{ question.options[option_id].text }
-        p #[strong Vote weight:] #{ amount } BTC x #{ (lockbox.rlocktime/144).toFixed(2) } days = 
-          strong #{(weight/144).toFixed(2)} #[abbr(title='Bitcoin Days Locked') BDL]
+        p #[strong Vote weight:] #{ amount } BTC x #{ round(lockbox.rlocktime/144, 0.001) } days = 
+          strong #{round(weight/144, 0.001)} #[abbr(title='Bitcoin Days Locked') BDL]
 
         p To reclaim your funds, #[strong keep a safe backup] of your refund transaction and broadcast it in #{ lockbox.rlocktime } blocks:
         pre= rawtx

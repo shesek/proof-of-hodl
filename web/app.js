@@ -4,13 +4,13 @@ const iferr      = require('iferr')
     , vagueTime  = require('vague-time')
     , watchAddr  = require('../watch-addr')
     , { verifyProof } = require('../hodl')
-    , { makeVoteMsg, formatSatoshis } = require('./util')
+    , { makeVoteMsg, formatSatoshis } = require('../util')
 
 const NETWORK = process.env.NETWORK || 'testnet'
 
 const ADDR_WATCH_TIMEOUT = 10 * 60 * 1000
 
-const { listQuestions, loadQuestion, loadQuestionVotes, loadQuestionTotals, saveVote } = require('./model')()
+const { listQuestions, loadQuestion, loadQuestionVotes, loadQuestionTotals, loadRefundTxs, saveVote } = require('./model')()
 
 const app = express()
 
@@ -21,6 +21,7 @@ app.set('views', __dirname + '/views')
 
 app.locals.formatSatoshis = formatSatoshis
 app.locals.vague = time => vagueTime.get({ to: time })
+app.locals.round = require('round')
 
 app.use(express.static(__dirname + '/static'))
 app.use(require('morgan')('dev'))
@@ -44,7 +45,8 @@ app.get('/script.js', browserify(__dirname + '/client.js'))
 app.get('/', (req, res, next) => listQuestions(iferr(next, questions => res.render('index', { questions }))))
 
 app.get('/wait/:addr', (req, res, next) => {
-  watchAddr(req.params.addr, iferr(next, (coin, tx, block) => res.send({ coin, tx: tx.toRaw().toString('hex'), block })))
+  watchAddr(req.params.addr, iferr(next, (coin, tx, block) =>
+      res.headersSent || res.send({ coin, tx: tx.toRaw().toString('hex'), block })))
   setTimeout(_ => res.headersSent || res.sendStatus(402), ADDR_WATCH_TIMEOUT)
 })
 
@@ -74,6 +76,13 @@ app.post('/q/:question/:option/vote', (req, res, next) => {
   , txid:   locktx.txid() // @TODO vout too
   ,
   }, iferr(next, _ => res.send(201)))
+})
+
+app.get('/txs.txt', (req, res, next) => {
+  loadRefundTxs(iferr(next, votes => {
+    res.type('text/plain')
+       .send(votes.map(v => [ v.address, v.txid.toString('hex'), v.refundtx.toString('hex') ].join(',')).join('\n'))
+  }))
 })
 
 app.listen(app.settings.port, _ => console.log(`HTTP server listening on port ${ app.get('port') }`))

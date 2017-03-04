@@ -4,3 +4,11 @@ pre{ word-break: break-all; white-space: normal  }
 .results h2 { margin-bottom: 1em }
 .results ul { list-style: none; padding-left: 0 }
 .results button { margin: 1em 0  }
+
+.navbar-header {
+    float: left;
+    padding: 22px 15px 15px 15px;
+    text-align: center;
+    width: 100%;
+}
+.navbar-brand {float:none;}
