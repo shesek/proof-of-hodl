@@ -1,8 +1,10 @@
 const yargs = require('yargs')
     , inquirer = require('inquirer')
+    , round = require('round')
     , debug = require('debug')('proof-of-hodl')
     , { iferr, throwerr } = require('iferr')
     , { lock, unlock, makeProof, verifyProof } = require('./hodl')
+    , { formatSatoshis } = require('./util')
     , watchAddr = require('./watch-addr')
 
 
@@ -11,7 +13,7 @@ require('colors')
 yargs
   .usage('$0 <cmd> [args]')
   .command('lock [msg]', 'create lock proof', { duration: { required: true }, refund: { required: true  } }, argv => {
-    const lockbox = lock(+argv.duration, argv.msg)
+    const lockbox = lock(+argv.duration, ''+argv.msg)
 
     //console.log('Ephemeral private key:'.cyan, lockbox.privkey)
     debug('encumberScript:', lockbox.redeemScript)
@@ -19,13 +21,34 @@ yargs
 
     watchAddr(lockbox.address, throwerr((coin, tx) => {
       const refundTx = unlock(lockbox, coin, argv.refund)
-      console.log('Refund tx, keep this!'.red, refundTx.toRaw().toString('hex'))
+          , proof = makeProof(tx, lockbox)
 
-      const proof = makeProof(tx, lockbox)
-      console.log('Proof', JSON.stringify(proof))
-
-      console.log('Verify', verifyProof(proof))
+      console.log('- %s %s BTC x %s days = %s (%s satoshi-blocks)', 'value:'.red.bold
+      , formatSatoshis(coin.value)
+      , round(lockbox.rlocktime/144, 0.0001)
+      , (round(+formatSatoshis(coin.value * lockbox.rlocktime / 144), 0.00001) + ' BDL').green
+      , coin.value * lockbox.rlocktime)
+      console.log('- %s %s', 'refund tx:'.red.bold, refundTx.toRaw().toString('hex'))
+      console.log('- %s %s', 'proof:'.red.bold, JSON.stringify(proof))
+      process.exit()
     }))
+  })
+
+  .command('verify [proof]', 'verify proof', {}, argv => {
+    const proof = JSON.parse(argv.proof)
+        , { value, rlocktime, weight, address, msg } = verifyProof(proof)
+    if (value) {
+      console.log('- %s %s BTC x %s days = %s (%s satoshi-blocks)', 'value:'.red.bold
+      , formatSatoshis(value)
+      , round(rlocktime/144, 0.0001)
+      , (round(+formatSatoshis(weight/144), 0.00001) + ' BDL').green
+      , weight)
+      console.log('- %s %s', 'msg:'.red.bold, msg)
+      console.log('- %s %s', 'address:'.red.bold, address)
+    } else {
+      console.log('invalid proof!'.red)
+    }
+    process.exit()
   })
   .help()
   .argv
