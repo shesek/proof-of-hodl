@@ -2,7 +2,7 @@ const yargs = require('yargs')
     , inquirer = require('inquirer')
     , debug = require('debug')('proof-of-hodl')
     , { iferr, throwerr } = require('iferr')
-    , { lock, unlock } = require('./hodl')
+    , { lock, unlock, makeProof, verifyProof } = require('./hodl')
     , watchAddr = require('./watch-addr')
 
 
@@ -17,10 +17,15 @@ yargs
     debug('encumberScript:', lockbox.redeemScript)
     console.log('Please deposit funds to:'.cyan, lockbox.address)
 
-    watchAddr(lockbox.address, coin => {
-      const tx = unlock(lockbox, coin, argv.refund)
-      console.log('Refund tx, keep this!'.red, tx.toRaw().toString('hex'))
-    })
+    watchAddr(lockbox.address, throwerr((coin, tx) => {
+      const refundTx = unlock(lockbox, coin, argv.refund)
+      console.log('Refund tx, keep this!'.red, refundTx.toRaw().toString('hex'))
+
+      const proof = makeProof(tx, lockbox)
+      console.log('Proof', JSON.stringify(proof))
+
+      console.log('Verify', verifyProof(proof))
+    }))
   })
   .help()
   .argv
