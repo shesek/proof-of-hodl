@@ -1,6 +1,6 @@
 const debug = require('debug')('proof-of-hodl')
     , bcoin = require('bcoin')
-    , { script: Script, opcode: Opcode, address: Address, coin: Coin, keyring: KeyRing, tx: TX, mtx: MTX, bn: BN } = bcoin
+    , { script: Script, opcode: Opcode, address: Address, coin: Coin, keyring: KeyRing, tx: TX, mtx: MTX, bn: BN, crypto: Crypto, ec: EC } = bcoin
     , { PrivateKey, PublicKey } = bcoin.hd
     , { hashType } = Script
     , { OP_CHECKSEQUENCEVERIFY, OP_DROP, OP_CHECKSIG, OP_0 } = Script.opcodes
@@ -12,7 +12,25 @@ const H = x => 123 // @XXX
 
 const rev = str => str.match(/../g).reverse().join('')
 
-const deriveMsgKey = (key, msg) => key.derive(H(msg))
+const makePubKey = (rawKey, h) => {
+  const key     = new PublicKey
+  key.publicKey = rawKey
+  key.depth = 0
+  key.parentFingerPrint = new Buffer([0, 0, 0, 0])
+  key.network   = NETWORK
+  key.chainCode = h
+  key.childIndex = 0
+  return key
+}
+
+const deriveMsgKey = (key, msg) => {
+  if (!Buffer.isBuffer(msg)) msg = new Buffer(''+msg, 'utf8')
+  const h = Crypto.hmac('sha256', msg, key.toPublic().toRaw())
+
+  return PrivateKey.isHDPrivateKey(key)
+    ? PrivateKey.fromKey(EC.privateKeyTweakAdd(key.privateKey, h), h) // @FIXME h is re-used for childCode
+    : makePubKey(EC.publicKeyTweakAdd(key.publicKey, h), h)
+}
 
 const makeEncumberScript = (pubkey, rlocktime) => {
   const script = new Script
