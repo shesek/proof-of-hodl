@@ -45,15 +45,13 @@ const verifyLockTx = (tx, rlocktime, pubkey) => {
       , outputScript = Script.fromScripthash(redeemScript.hash160())
       , address      = Address.fromScript(outputScript)
       , address58    = address.toBase58(NETWORK)
+      , value        = tx.outputs.reduce((total, out) =>
+        address58 === Address.fromScript(out.script).toBase58(NETWORK)
+          ? total + out.value
+          : total
+        , 0)
 
-  return {
-    address, tx
-  , value: tx.outputs.reduce((total, out) =>
-      address58 === Address.fromScript(out.script).toBase58(NETWORK)
-        ? total + out.value
-        : total
-    , 0)
-  }
+  return { address, tx, value, rlocktime, weight: value*rlocktime }
 }
 
 exports.lock = (rlocktime, msg) => {
@@ -92,5 +90,5 @@ exports.makeProof = (tx, lockbox) => ({
 exports.verifyProof = ({ tx: rawtx, pubkey, rlocktime, msg }) => {
   const tx = TX.isTX(rawtx) ? rawtx : TX.fromRaw(rawtx, 'hex')
       , mpubkey = deriveMsgKey(PublicKey.fromBase58(pubkey), msg)
-  return verifyLockTx(tx, rlocktime, mpubkey)
+  return Object.assign(verifyLockTx(tx, rlocktime, mpubkey), { msg })
 }
