@@ -21,9 +21,7 @@ const payDialog     = require('./views/pay-dialog.pug')
 const successDialog = require('./views/success-dialog.pug')
 
 
-const _question = $('meta[name=question]').attr('content')
-if (!_question) return
-const question = JSON.parse(_question)
+const question = JSON.parse($('meta[name=question]').attr('content'))
 
 $('[data-vote]').click(e => {
   e.preventDefault()

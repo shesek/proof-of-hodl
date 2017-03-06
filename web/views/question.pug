@@ -6,6 +6,11 @@ append vars
 append head
   meta(name='question', content=question)
 
+append scripts
+  script(src='jquery-3.1.1.slim.min.js')
+  script(src='bootstrap/js/bootstrap.mini.js')
+  script(src='script.js')
+
 block content
   - opts = Object.keys(question.options)
   - alltotal = opts.reduce((total, oid) => +total + (+totals[oid] || 0), 0)
