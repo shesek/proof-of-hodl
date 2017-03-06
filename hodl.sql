@@ -3,7 +3,7 @@ create table question(id serial primary key, text varchar not null);
 create table question_option(id serial primary key, question_id integer references question(id) not null, text varchar not null);
 
 create table vote(id serial primary key, question_id integer references question(id) not null, option_id integer references question_option(id) not null,
-                  timestamp timestamp default now() not null, value bigint not null, rlocktime integer not null, address varchar not null,
+                  timestamp timestamp default now() not null, value numeric(16) not null, rlocktime integer not null, address varchar not null,
                   refundtx bytea not null, locktx bytea not null, txid varchar not null);
 
 create index idx_vote_weight on vote((value*rlocktime));
