@@ -19,6 +19,7 @@ app.set('url', process.env.URL || `http://localhost:${ app.settings.port }`)
 app.set('static_url', process.env.STATIC_URL || app.settings.url)
 app.set('view engine', 'pug')
 app.set('views', __dirname + '/views')
+app.set('trust proxy', !!process.env.PROXIED)
 
 app.locals.formatSatoshis = formatSatoshis
 app.locals.vague = time => vagueTime.get({ to: time })
