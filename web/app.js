@@ -24,7 +24,6 @@ app.locals.formatSatoshis = formatSatoshis
 app.locals.vague = time => vagueTime.get({ to: time })
 app.locals.round = require('round')
 
-app.use(express.static(__dirname + '/static'))
 app.use(require('morgan')('dev'))
 app.use(require('body-parser').json())
 app.use(require('body-parser').urlencoded({ extended: false }))
@@ -42,7 +41,8 @@ app.param('option', (req, res, next, id) =>
 )
 
 if (app.settings.env != 'production') {
-    app.get('/script.js', browserify(__dirname + '/client.js'))
+  app.use(express.static(__dirname + '/static'))
+  app.get('/script.js', browserify(__dirname + '/client.js'))
 }
 
 app.get('/', (req, res, next) => listQuestions(iferr(next, questions => res.render('index', { questions }))))
