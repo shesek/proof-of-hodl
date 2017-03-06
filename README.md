@@ -1,9 +1,7 @@
 # proof-of-hodl
 
-[HODLing](https://bitcointalk.org/index.php?topic=375643.0) is the act of sitting on your bitcoin, refusing to sell.
 
-
-proof-of-hodl is a command line tool to time-lock and release bitcoin using [OP_CHECKLOCKTIMEVERIFY](https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki) - and - a web voting system where votes are weighted by ```amount of coins``` * ```lock duration```.
+proof-of-[hodl](https://bitcointalk.org/index.php?topic=375643.0) is a command line tool to time-lock and release bitcoin using [OP_CHECKLOCKTIMEVERIFY](https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki) - and - a web voting system where votes are weighted by ```amount of coins``` * ```lock duration```.
 
 
 ## Install 
