@@ -1,13 +1,15 @@
 # proof-of-hodl
 
+proof-of-[hodl](https://bitcointalk.org/index.php?topic=375643.0) is a command line tool to time-lock and release bitcoin using [OP_CHECKSEQUENCEVERIFY](https://github.com/bitcoin/bips/blob/master/bip-0112.mediawiki) - and - a web voting system where votes are weighted by ```amount of coins``` * ```lock duration```.
 
-proof-of-[hodl](https://bitcointalk.org/index.php?topic=375643.0) is a command line tool to time-lock and release bitcoin using [OP_CHECKLOCKTIMEVERIFY](https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki) - and - a web voting system where votes are weighted by ```amount of coins``` * ```lock duration```.
-
+**NOTE:** this is early [hackathon](http://hack.bitembassy.org/)-grade software, currently running on testnet.
 
 ## Install 
 
  ```bash
-$ npm install hodl
+$ npm install -g hodl
+
+$ hodl --help
 ```
 
 
@@ -28,15 +30,26 @@ hodl verify [proof]
  ```
 
 
-## HODL voting 
+## HODL voting
+
 A live version is hosted here: [hodl.voting](https://hodl.voting)
 
 Votes over multiple choice questions are weighted by Bitcoin Days Locked (DBL) - the amount of coins multiplied by the number of days locked. The voter is prompted for an amount, lock duration and a refund address and presented with a QR code of a deposit address. Once a payment is received, a refund transaction is presented to be kept and broadcast later, as well as kept on the server for backup, and the vote is cast. Keys never leave the browser.
-
-TODO: additional install / run instructions for the web?
  
 
-### License
+### License (ISC)
 
-[WTFPL](http://www.wtfpl.net/txt/copying)
+Copyright (c) 2017, Nadav Ivgi
+
+Permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+THIS SOFTWARE.
 
