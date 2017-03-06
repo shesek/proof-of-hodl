@@ -78,7 +78,7 @@ app.post('/q/:question/:option/vote', (req, res, next) => {
   , locktx: locktx.toRaw()
   , txid:   locktx.txid() // @TODO vout too
   ,
-  }, iferr(next, _ => res.send(201)))
+  }, iferr(next, _ => res.sendStatus(201)))
 })
 
 app.get('/txs.txt', (req, res, next) => {
