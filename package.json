@@ -13,5 +13,14 @@
     "move-decimal-point": "0.0.1",
     "round": "^2.0.1",
     "yargs": "^6.6.0"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-preset-es2015": "^6.22.0"
   }
 }

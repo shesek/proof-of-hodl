@@ -1,5 +1,5 @@
 const iferr      = require('iferr')
-    , browserify = require('browserify-middleware')
+    , browserify = process.env.NODE_ENV == 'production' || require('browserify-middleware')
     , express    = require('express')
     , vagueTime  = require('vague-time')
     , watchAddr  = require('../watch-addr')
@@ -16,6 +16,7 @@ const app = express()
 
 app.set('port', process.env.PORT || 5656)
 app.set('url', process.env.URL || `http://localhost:${ app.settings.port }`)
+app.set('static_url', process.env.STATIC_URL || app.settings.url)
 app.set('view engine', 'pug')
 app.set('views', __dirname + '/views')
 
@@ -40,7 +41,9 @@ app.param('option', (req, res, next, id) =>
   : res.sendStatus(404)
 )
 
-app.get('/script.js', browserify(__dirname + '/client.js'))
+if (app.settings.env != 'production') {
+    app.get('/script.js', browserify(__dirname + '/client.js'))
+}
 
 app.get('/', (req, res, next) => listQuestions(iferr(next, questions => res.render('index', { questions }))))
 

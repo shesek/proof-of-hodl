@@ -7,9 +7,12 @@ append head
   meta(name='question', content=question)
 
 append scripts
-  script(src='jquery-3.1.1.slim.min.js')
-  script(src='bootstrap/js/bootstrap.mini.js')
-  script(src='script.js')
+  if env == 'development'
+    script(src=settings.static_url + '/jquery-3.1.1.slim.min.js')
+    script(src=settings.static_url + '/bootstrap/js/bootstrap.mini.js')
+    script(src=settings.static_url + '/script.js')
+  else
+    script(src=settings.static_url + '/q.js')
 
 block content
   - opts = Object.keys(question.options)
