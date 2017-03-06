@@ -20,6 +20,7 @@ block content
   - percents = !alltotal ? {} : opts.reduce((o, oid) => (o[oid]=round((totals[oid]||0)/alltotal*100, 0.1), o), {})
   - grouped_votes = opts.map(oid => ({ option: question.options[oid], votes: votes.filter(v => v.option_id == oid) }))
   - col_size = opts.length >= 3 ? 4 : 6
+  - col_num  = col_size == 4 ? 3 : 2
   - opt_heading = col_size == 6 ? 'h3' : 'h4'
 
   .container
@@ -27,7 +28,7 @@ block content
       .col-md-12.results
         h2= question.text
         .row
-          for vote_group in grouped_votes
+          for vote_group, i in grouped_votes
             - option = vote_group.option
             div(class='col-md-'+col_size).opt
               #{opt_heading} #{ option.text } &mdash; 
@@ -42,6 +43,8 @@ block content
                   li #{ formatSatoshis(vote.value) } BTC x #{ round(vote.rlocktime/144, 0.001) } days = #{ round(+formatSatoshis(vote.weight_bdl), 0.001) } 
                     abbr(title='Bitcoin Days Locked') BDL
                     | <br>#[span.text-muted= vague(vote.timestamp)]
+            if (i+1) % col_num == 0
+              .clearfix
 
 
       //-.col-md-4
