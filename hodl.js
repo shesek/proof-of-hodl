@@ -1,6 +1,6 @@
-const debug = require('debug')('proof-of-hodl')
-    , bcoin = require('bcoin')
-    , { script: Script, opcode: Opcode, address: Address, coin: Coin, keyring: KeyRing, tx: TX, mtx: MTX, bn: BN, crypto: Crypto, ec: EC } = bcoin
+const bcoin = require('bcoin')
+    , { script: Script, opcode: Opcode, address: Address, coin: Coin, keyring: KeyRing
+      , tx: TX, mtx: MTX, bn: BN, crypto: Crypto, ec: EC } = bcoin
     , { PrivateKey, PublicKey } = bcoin.hd
     , { hashType } = Script
     , { OP_CHECKSEQUENCEVERIFY, OP_DROP, OP_CHECKSIG, OP_0 } = Script.opcodes
@@ -43,18 +43,18 @@ const makeEncumberScript = (pubkey, rlocktime) => {
   return script
 }
 
-const makeUnlockTx = (coin, redeemScript, rlocktime, refundAddr) => TX.fromOptions({
+const makeUnlockTx = (coin, rlocktime, refundAddr) => TX.fromOptions({
   version: 2
-, inputs: [ { prevout: coin, sequence: rlocktime, script: [ OP_0, redeemScript.toRaw() ] } ]
+, inputs: [ { prevout: coin, sequence: rlocktime } ]
 , outputs: [ { address: refundAddr, value: coin.value - FEE } ]
 })
 
 const signUnlockTx = (privkey, redeemScript, tx, vin, coin) => {
   const mtx = MTX.fromTX(tx)
-      , inScript = mtx.inputs[vin].script
-      , sig = mtx.signature(vin, inScript.getRedeem(), coin.value, privkey.privateKey, hashType.ALL, 0)
-  inScript.set(0, sig)
-  inScript.compile()
+  mtx.inputs[vin].script = Script.fromArray([
+    mtx.signature(vin, redeemScript, coin.value, privkey.privateKey, hashType.ALL, 0)
+  , redeemScript.toRaw()
+  ])
   return mtx.toTX()
 }
 
@@ -64,17 +64,16 @@ const verifyLockTx = (tx, rlocktime, pubkey) => {
       , address      = Address.fromScript(outputScript)
       , address58    = address.toBase58(NETWORK)
       , value        = tx.outputs.reduce((total, out) =>
-        address58 === Address.fromScript(out.script).toBase58(NETWORK)
-          ? total + out.value
-          : total
+          address58 === Address.fromScript(out.script).toBase58(NETWORK)
+            ? total + out.value
+            : total
         , 0)
 
   return { address, tx, value, rlocktime, weight: value*rlocktime }
 }
 
 exports.lock = (rlocktime, msg) => {
-  debug('lock(%d, %s)', rlocktime, msg)
-  const privkey      = PrivateKey.generate(NETWORK) // fromSeed(new Buffer('001100110011001100119909')) // generate(NETWORK) // @XXX
+  const privkey      = PrivateKey.generate(NETWORK)
       , mpubkey      = deriveMsgKey(privkey, msg).toPublic()
       , redeemScript = makeEncumberScript(mpubkey, rlocktime)
       , outputScript = Script.fromScripthash(redeemScript.hash160())
@@ -95,7 +94,7 @@ exports.unlock = ({ privkey, rlocktime, msg }, c, refundAddr) => {
       , outputScript = Script.fromScripthash(redeemScript.hash160())
       , coin         = Coin.isCoin(c) ? c : Coin.fromOptions({ hash: rev(c.txid), index: c.vout, script: outputScript, value: c.value })
 
-  return signUnlockTx(mprivkey, redeemScript, makeUnlockTx(coin, redeemScript, rlocktime, refundAddr), 0, coin)
+  return signUnlockTx(mprivkey, redeemScript, makeUnlockTx(coin, rlocktime, refundAddr), 0, coin)
 }
 
 exports.makeProof = (tx, lockbox) => ({
