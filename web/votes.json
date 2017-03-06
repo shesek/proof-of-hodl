@@ -1,7 +1,0 @@
-{
-  "1": {
-    "id": 1
-  , "text": "Do you support SegWit?"
-  , "options": [ "Yes", "No" ]
-  }
-}
