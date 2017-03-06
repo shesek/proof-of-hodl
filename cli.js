@@ -1,21 +1,23 @@
-const yargs = require('yargs')
-    , inquirer = require('inquirer')
-    , round = require('round')
+#!/usr/bin/env node
+
+const round = require('round')
     , debug = require('debug')('proof-of-hodl')
     , { iferr, throwerr } = require('iferr')
     , { lock, unlock, makeProof, verifyProof } = require('./hodl')
     , { formatSatoshis } = require('./util')
     , watchAddr = require('./watch-addr')
 
-
 require('colors')
 
-yargs
+const yargs = require('yargs')
   .usage('$0 <cmd> [args]')
-  .command('lock [msg]', 'create lock proof', { duration: { required: true }, refund: { required: true  } }, argv => {
+  .command('lock [msg]', 'create lock proof', {
+    duration: { required: true, alias: 'd', describe: 'lock duration in number of blocks' }
+  , refund: { required: true, alias: 'r', describe: 'refund address' }
+  }, argv => {
     const lockbox = lock(+argv.duration, ''+argv.msg)
 
-    //console.log('Ephemeral private key:'.cyan, lockbox.privkey)
+    debug('ephemeral private key:'.cyan, lockbox.privkey)
     debug('encumberScript:', lockbox.redeemScript)
     console.log('Please deposit funds to:'.cyan, lockbox.address)
 
@@ -50,5 +52,9 @@ yargs
     }
     process.exit()
   })
+
   .help()
-  .argv
+
+, argv = yargs.argv
+
+argv._.length || yargs.showHelp()
