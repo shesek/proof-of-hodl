@@ -9,7 +9,7 @@ html
       meta(http-equiv='X-UA-Compatible', content='IE=edge')
       meta(name='viewport', content='width=device-width, initial-scale=1')
       base(href=settings.url)
-      title #{ page_title ? page_title+' - ':'' }  Proof Of Hodl
+      title #{ page_title ? page_title+' - ':'' }HODL.voting
       meta(name='description', content='HODL-weighted voting')
 
       link(href=settings.static_url+'/bootstrap/css/bootstrap.min.css', type='text/css', rel='stylesheet')
@@ -22,13 +22,13 @@ html
           span.sr-only Toggle navigation
           | #[span.icon-bar]#[span.icon-bar]#[span.icon-bar]
 
-        a.navbar-brand(href=settings.url) Proof Of HODL
+        a.navbar-brand(href=settings.url) HODL.voting
 
     block content
 
     footer.container
       p.text-center: small
-        | built by #[a(href='https://www.bitrated.com/nadav') Nadav Ivgi] of #[a(href='https://www.bitrated.com/') Bitrated]
+        | made by #[a(href='https://www.bitrated.com/nadav') Nadav Ivgi] of #[a(href='https://www.bitrated.com/') Bitrated]
         |  for the #[a(href='http://hack.bitembassy.org/') TLV emBassy 2017 Hackathon]
         br
         |  keys never leave the browser &middot; no external scripts<br>
