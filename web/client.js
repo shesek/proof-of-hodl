@@ -67,7 +67,7 @@ $(document.body).on('submit', 'form[data-question]', e => {
 
     $(successDialog({ question, option_id, coin, amount, weight, lockbox, rawtx, round })).modal()
 
-    request.post(`/q/${ question.id }/${ option.id }/vote`)
+    request.post(`/${ question.slug }/${ option.id }/vote`)
       .send({ tx: locktx, pubkey: lockbox.pubkey, rlocktime: lockbox.rlocktime, refundtx: rawtx })
       .end(throwerr(res => console.log('got reply', res.body)))
   }))

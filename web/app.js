@@ -10,7 +10,7 @@ const NETWORK = process.env.NETWORK || 'testnet'
 
 const ADDR_WATCH_TIMEOUT = 10 * 60 * 1000
 
-const { listQuestions, loadQuestion, loadQuestionVotes, loadQuestionTotals, loadRefundTxs, saveVote } = require('./model')()
+const { listQuestions, loadQuestionBySlug, loadQuestionVotes, loadQuestionTotals, loadRefundTxs, saveVote } = require('./model')()
 
 const app = express()
 
@@ -28,8 +28,8 @@ app.use(require('morgan')('dev'))
 app.use(require('body-parser').json())
 app.use(require('body-parser').urlencoded({ extended: false }))
 
-app.param('question', (req, res, next, id) =>
-  loadQuestion(id, iferr(next, question => question
+app.param('question', (req, res, next, slug) =>
+  loadQuestionBySlug(slug, iferr(next, question => question
     ? (req.question = res.locals.question = question, next())
     : res.sendStatus(404)
   )))
@@ -53,7 +53,14 @@ app.get('/wait/:addr', (req, res, next) => {
   setTimeout(_ => res.headersSent || res.sendStatus(402), ADDR_WATCH_TIMEOUT)
 })
 
-app.get('/q/:question', (req, res, next) =>
+app.get('/txs.txt', (req, res, next) => {
+  loadRefundTxs(iferr(next, votes => {
+    res.type('text/plain')
+       .send(votes.map(v => [ v.address, v.txid.toString('hex'), v.refundtx.toString('hex') ].join(',')).join('\n'))
+  }))
+})
+
+app.get('/:question', (req, res, next) =>
   loadQuestionTotals(req.question.id, iferr(next, totals =>
     loadQuestionVotes(req.question.id, iferr(next, votes =>
       res.render('question', { totals, votes })
@@ -61,7 +68,7 @@ app.get('/q/:question', (req, res, next) =>
   ))
 )
 
-app.post('/q/:question/:option/vote', (req, res, next) => {
+app.post('/:question/:option/vote', (req, res, next) => {
   const { tx: rawtx, pubkey, rlocktime } = req.body
       , msg = makeVoteMsg(req.question, req.question_option)
 
@@ -79,13 +86,6 @@ app.post('/q/:question/:option/vote', (req, res, next) => {
   , txid:   locktx.txid() // @TODO vout too
   ,
   }, iferr(next, _ => res.sendStatus(201)))
-})
-
-app.get('/txs.txt', (req, res, next) => {
-  loadRefundTxs(iferr(next, votes => {
-    res.type('text/plain')
-       .send(votes.map(v => [ v.address, v.txid.toString('hex'), v.refundtx.toString('hex') ].join(',')).join('\n'))
-  }))
 })
 
 app.listen(app.settings.port, _ => console.log(`HTTP server listening on port ${ app.get('port') }`))

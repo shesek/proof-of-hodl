@@ -1,4 +1,4 @@
-create table question(id serial primary key, text varchar not null);
+create table question(id serial primary key, slug varchar not null unique, text varchar not null);
 
 create table question_option(id serial primary key, question_id integer references question(id) not null, text varchar not null);
 

@@ -9,11 +9,11 @@ module.exports = _ => {
     client.query('SELECT * FROM v_question ORDER BY id DESC', iferr(cb, result =>
       cb(null, result.rows)))
 
-  const loadQuestion = (id, cb) =>
-    client.query('SELECT * FROM question WHERE id=$1', [ id ], iferr(cb, result =>
+  const loadQuestionBySlug = (slug, cb) =>
+    client.query('SELECT * FROM question WHERE slug=$1', [ slug ], iferr(cb, result =>
       !result.rows.length
       ? cb(null)
-      : client.query('SELECT * FROM question_option WHERE question_id=$1', [ id ], iferr(cb, oresult => {
+      : client.query('SELECT * FROM question_option WHERE question_id=$1', [ result.rows[0].id ], iferr(cb, oresult => {
           const question = result.rows[0]
           question.options = oresult.rows.reduce((o, opt) => (o[opt.id]=opt, o), {  })
           cb(null, question)
@@ -39,5 +39,5 @@ module.exports = _ => {
                , [ vote.question_id, vote.option_id, vote.value, vote.rlocktime, vote.address, vote.txid, vote.locktx, vote.refundtx ]
                , cb))
 
-  return { listQuestions, loadQuestion, loadQuestionVotes, loadQuestionTotals, loadRefundTxs, saveVote }
+  return { listQuestions, loadQuestionBySlug, loadQuestionVotes, loadQuestionTotals, loadRefundTxs, saveVote }
 }
