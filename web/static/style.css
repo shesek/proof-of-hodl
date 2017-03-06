@@ -1,6 +1,7 @@
 pre{ word-break: break-all; white-space: normal  }
 a, a:hover { color: #158cba }
 /*.navbar-brand { font-size: 2em }*/
+footer { margin-top: 5em  }
 .navbar { background: #222 }
 .navbar-brand {  color: #fff !important }
 .homepage ul { font-size: 2em }
