@@ -40,13 +40,13 @@ if (BTCD_URI) {
     //, { name: 'vout', message: 'vout' }
     //, { name: 'value', message: 'value' }
     ]).then(answers => {
-        const tx = TX.fromRaw(answers.rawtx, 'hex')
+        const tx = TX.fromRaw(answers.rawtx.replace(/\s+/g, ''), 'hex')
         tx.outputs.some((out, outv) => {
           if (out.getAddress().toBase58(NETWORK) == addr) {
             cb(null, Coin.fromTX(tx, outv, -1), tx)
             return true
           }
-        })
+        }) || cb(new Error('invalid tx'))
     })
   }
 }
