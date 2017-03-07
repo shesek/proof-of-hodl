@@ -28,6 +28,7 @@ app.locals.round = require('round')
 app.use(require('morgan')('dev'))
 app.use(require('body-parser').json())
 app.use(require('body-parser').urlencoded({ extended: false }))
+app.use(require('connect-ext-type')({ '.json': 'application/json' }))
 
 app.param('question', (req, res, next, slug) =>
   loadQuestionBySlug(slug, iferr(next, question => question
@@ -64,7 +65,13 @@ app.get('/txs.txt', (req, res, next) => {
 app.get('/:question', (req, res, next) =>
   loadQuestionTotals(req.question.id, iferr(next, totals =>
     loadQuestionVotes(req.question.id, iferr(next, votes =>
-      res.render('question', { totals, votes })
+        res.format({
+          html: _ => res.render('question', { totals, votes })
+        , json: _ => res.send({ question: req.question, totals
+                              , votes: votes.map(v => (v.locktx = v.locktx.toString('hex')
+                                                     , v.refundtx = v.refundtx.toString('hex')
+                                                     , v))})
+        })
     ))
   ))
 )

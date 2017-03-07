@@ -1,6 +1,7 @@
 block vars
   - page_title = null
   - meta_desc = 'CHECKSEQUENCEVERIFY-based time-lock-weighted voting for provable long-term bitcoin HODLers'
+  - json_url = null
 
 doctype html5
 html
@@ -31,6 +32,8 @@ html
     footer.container
       p.text-center
         | #[strong testnet] &middot;
+        if json_url
+          |  #[a(href=json_url) json] &middot;
         |  #[a(href='https://github.com/shesek/proof-of-hodl') source] &middot;
         |  #[a(href='mailto:nadav+hodl.voting@bitrated.com') contact] &middot;
         |  #[a(href='https://www.docdroid.net/rzFKS1g/proof-of-hodl.pdf.html') slides]

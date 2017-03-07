@@ -3,6 +3,7 @@ extend layout
 append vars
   - page_title = question.text
   - meta_desc = question.text
+  - json_url = '/' + question.slug + '.json'
 
 append head
   meta(name='question', content=question)
