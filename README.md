@@ -20,13 +20,15 @@ However, unlike similar forms of sacrifice such as [sacrifice to miners fees](ht
 
 
 ## cli
-The ```lock``` command takes a lock-duration, a refund address and an optional message, creates an address where funds to be locked can be deposited and once a payment was received, present the redeeming transaction so it can be saved and broadcast when the time arrives.  It also provides a proof that can be shared and verified using the ```verify``` command.
+The ```lock``` command takes a lock-duration, a refund address and a message (which the lock commits to),
+creates an address where funds to be locked can be deposited and once a payment was received,
+present the redeeming transaction so it can be saved and broadcast when the time arrives.
+It also provides a proof that can be shared and verified using the ```verify``` command.
 
  ```bash
-hodl lock --duration 10 --refund [addr] 'I support SegWit'
- ```
- ```bash
-hodl verify [proof]
+$ hodl lock --duration 10 --refund [addr] 'I support SegWit'
+
+$ hodl verify [proof]
  ```
 
 
