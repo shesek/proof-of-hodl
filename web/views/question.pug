@@ -41,7 +41,7 @@ block content
                   |  (#{ percents[option.id] }%)
                 else
                   em no votes
-              button.btn.btn-success(data-vote=option.id) Vote
+              button.btn.btn-success.btn-vote(data-vote=option.id) Vote
               ul
                 for vote in vote_group.votes
                   li #{ formatSatoshis(vote.value) } BTC x #{ round(vote.rlocktime/144, 0.001) } days = #{ round(+formatSatoshis(vote.weight_bdl), 0.001) } 
