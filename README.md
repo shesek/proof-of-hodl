@@ -26,7 +26,7 @@ This property makes HODL voting especially interesting for questions relevant to
 
 
 ## cli
-The ```lock``` command takes a lock-duration, a refund address and a message (which the lock commits to),
+The ```lock``` command takes a lock-duration (in number of blocks), a refund address and a message (which the lock commits to),
 creates an address where funds to be locked can be deposited and once a payment was received,
 present the redeeming transaction so it can be saved and broadcast when the time arrives.
 It also provides a proof that can be shared and verified using the ```verify``` command.
@@ -42,7 +42,7 @@ $ hodl verify [proof]
 
 A live version is hosted here: [HODL.voting](https://hodl.voting)
 
-Votes over multiple choice questions are weighted by Bitcoin Days Locked (DBL) - the amount of coins multiplied by the number of days locked.
+Votes over multiple choice questions are weighted by Bitcoin Days Locked (BDL) - the amount of coins multiplied by the number of days locked.
 The voter is prompted for an amount, lock duration and a refund address and presented with a QR code of a deposit address.
 Once a payment is received, a refund transaction is presented to be kept and broadcast later, as well as kept on the server for backup, and the vote is cast.
 Keys never leave the browser.
