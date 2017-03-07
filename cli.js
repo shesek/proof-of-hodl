@@ -9,6 +9,13 @@ const round = require('round')
 
 require('colors')
 
+const printBDL = (value, rlocktime, weight=value*rlocktime) =>
+  console.log('- %s %s BTC x %s days = %s (%s satoshi-blocks)', 'value:'.cyan.bold
+  , formatSatoshis(value)
+  , round(rlocktime/144, 0.0001)
+  , (round(+formatSatoshis(weight/144), 0.00001) + ' BDL').green
+  , weight)
+
 const yargs = require('yargs')
   .usage('$0 <cmd> [args]')
   .command('lock [msg]', 'create lock proof', {
@@ -24,31 +31,24 @@ const yargs = require('yargs')
     watchAddr(lockbox.address, throwerr((coin, tx) => {
       const refundTx = unlock(lockbox, coin, argv.refund)
           , proof = makeProof(tx, lockbox)
-
-      console.log('- %s %s BTC x %s days = %s (%s satoshi-blocks)', 'value:'.red.bold
-      , formatSatoshis(coin.value)
-      , round(lockbox.rlocktime/144, 0.0001)
-      , (round(+formatSatoshis(coin.value * lockbox.rlocktime / 144), 0.00001) + ' BDL').green
-      , coin.value * lockbox.rlocktime)
-      console.log('- %s %s', 'refund tx:'.red.bold, refundTx.toRaw().toString('hex'))
-      console.log('- %s %s', 'proof:'.red.bold, JSON.stringify(proof))
+      printBDL(coin.value, lockbox.rlocktime)
+      console.log('- %s %s', 'refund tx:'.cyan.bold, refundTx.toRaw().toString('hex'))
+      console.log('- %s %s', 'proof:'.cyan.bold, JSON.stringify(proof))
       process.exit()
     }))
   })
 
   .command('verify [proof]', 'verify proof', {}, argv => {
     const proof = JSON.parse(argv.proof)
-        , { value, rlocktime, weight, address, msg } = verifyProof(proof)
+        , { txid, value, rlocktime, weight, address, msg } = verifyProof(proof)
     if (value) {
-      console.log('- %s %s BTC x %s days = %s (%s satoshi-blocks)', 'value:'.red.bold
-      , formatSatoshis(value)
-      , round(rlocktime/144, 0.0001)
-      , (round(+formatSatoshis(weight/144), 0.00001) + ' BDL').green
-      , weight)
-      console.log('- %s %s', 'msg:'.red.bold, msg)
-      console.log('- %s %s', 'address:'.red.bold, address)
+			console.log(typeof txid)
+			console.log('- %s %s\n  '+'(NOTE: this proof is only valid if this txid is mined!)'.red, 'lock txid:'.cyan.bold, txid)
+      console.log('- %s %s', 'address:'.cyan.bold, address)
+      printBDL(value, rlocktime, weight)
+      console.log('- %s %s', 'msg:'.cyan.bold, msg)
     } else {
-      console.log('invalid proof!'.red)
+      console.log('invalid proof!'.red.bold)
     }
     process.exit()
   })

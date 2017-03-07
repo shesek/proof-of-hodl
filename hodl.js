@@ -8,8 +8,6 @@ const bcoin = require('bcoin')
 const NETWORK = process.env.NETWORK || 'testnet'
     , FEE = 10000
 
-const H = x => 123 // @XXX
-
 const rev = str => str.match(/../g).reverse().join('')
 
 const makePubKey = (rawKey, h) => {
@@ -69,7 +67,7 @@ const verifyLockTx = (tx, rlocktime, pubkey) => {
             : total
         , 0)
 
-  return { address, tx, value, rlocktime, weight: value*rlocktime }
+  return { address, tx, txid: tx.txid(), value, rlocktime, weight: value*rlocktime }
 }
 
 exports.lock = (rlocktime, msg) => {
