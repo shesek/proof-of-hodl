@@ -89,7 +89,7 @@ exports.unlock = ({ privkey, rlocktime, msg }, c, refundAddr) => {
   const mprivkey     = deriveMsgKey(PrivateKey.fromBase58(privkey), msg)
       , redeemScript = makeEncumberScript(mprivkey.toPublic(), rlocktime)
       , outputScript = Script.fromScripthash(redeemScript.hash160())
-      , coin         = Coin.isCoin(c) ? c : Coin.fromOptions({ hash: rev(c.txid), index: c.vout, script: outputScript, value: c.value })
+      , coin         = Coin.isCoin(c) ? c : Coin.fromOptions(c)
 
   return signUnlockTx(mprivkey, redeemScript, makeUnlockTx(coin, rlocktime, refundAddr), 0, coin)
 }
