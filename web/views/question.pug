@@ -8,7 +8,7 @@ append head
   meta(name='question', content=question)
 
 append scripts
-  if env == 'development'
+  if settings.env == 'development'
     script(src=settings.static_url + '/jquery-3.1.1.slim.min.js')
     script(src=settings.static_url + '/bootstrap/js/bootstrap.mini.js')
     script(src=settings.static_url + '/script.js')

@@ -11,7 +11,9 @@
           strong #{round(weight/144, 0.01)} #[abbr(title='Bitcoin Days Locked') BDL]
 
         p.text-center Send #[strong= amount] BTC to #[strong= lockbox.address]
-        .text-center: img(src=pay_qr)
+        .text-center
+          img.center-block(src=pay_qr)
+          a.btn.btn-primary(href=pay_uri) Send Payment
 
       .modal-footer
         button.btn.btn-default(type='button', data-dismiss='modal') Cancel

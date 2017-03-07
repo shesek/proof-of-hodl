@@ -51,7 +51,7 @@ $(document.body).on('submit', 'form[data-question]', e => {
 
   console.log(lockbox)
 
-  const dialog = $(payDialog({ question, option_id, amount, weight, lockbox, pay_qr, round })).modal()
+  const dialog = $(payDialog({ question, option_id, amount, weight, lockbox, pay_uri, pay_qr, round })).modal()
 
   request('/wait/'+lockbox.address, throwerr(res => {
     if (!res.ok) return alert('payment time out')
