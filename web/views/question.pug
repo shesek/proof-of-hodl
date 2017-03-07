@@ -24,6 +24,8 @@ block content
   - col_num  = col_size == 4 ? 3 : 2
   - opt_heading = col_size == 6 ? 'h3' : 'h4'
 
+  - tx_explorer = 'https://testnet.smartbit.com.au/tx/'
+
   .container
     .row.question
       .col-md-12.results
@@ -43,7 +45,7 @@ block content
                 for vote in vote_group.votes
                   li #{ formatSatoshis(vote.value) } BTC x #{ round(vote.rlocktime/144, 0.001) } days = #{ round(+formatSatoshis(vote.weight_bdl), 0.001) } 
                     abbr(title='Bitcoin Days Locked') BDL
-                    | <br>#[span.text-muted= vague(vote.timestamp)]
+                    | <br>#[a.text-muted(title=vote.timestamp, href=tx_explorer + vote.txid, target='_blank')= vague(vote.timestamp)]
             if (i+1) % col_num == 0
               .clearfix
 
