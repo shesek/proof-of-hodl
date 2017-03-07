@@ -18,9 +18,10 @@ append scripts
 
 block content
   - alltotal = Object.keys(totals).reduce((total, oid) => +total + +totals[oid], 0)
+  - console.log('all total', alltotal)
   -
     options = question.options.map(o => (o.total   = totals[o.id]
-                                       , o.percent = alltotal&&round(o.total/alltotal*100, 0.1)
+                                       , o.percent = o.total ? round(o.total/alltotal*100, 0.1) : 0
                                        , o.votes   = votes.filter(v => v.option_id == o.id)
                                        , o))
   - col_size = options.length >= 3 ? 4 : 6
