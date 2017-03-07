@@ -6,7 +6,7 @@ module.exports = _ => {
   client.connect(throwerr(_ => console.log('Connected to postgres')))
 
   const listQuestions = cb =>
-    client.query('SELECT * FROM v_question ORDER BY id DESC', iferr(cb, result =>
+    client.query('SELECT * FROM v_question ORDER BY total_weight DESC', iferr(cb, result =>
       cb(null, result.rows)))
 
   const loadQuestionBySlug = (slug, cb) =>
