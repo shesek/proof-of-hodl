@@ -46,7 +46,10 @@ block content
                 for vote in vote_group.votes
                   li #{ formatSatoshis(vote.value) } BTC x #{ round(vote.rlocktime/144, 0.001) } days = #{ round(+formatSatoshis(vote.weight_bdl), 0.001) } 
                     abbr(title='Bitcoin Days Locked') BDL
-                    | <br>#[a.text-muted(title=vote.timestamp, href=tx_explorer + vote.txid, target='_blank')= vague(vote.timestamp)]
+                    br
+                    .text-muted
+                      | #[time(title=vote.timestamp, datetime=vote.timestamp)= vague(vote.timestamp) ]
+                      |  &middot; #[a.text-muted(title=vote.txid, href=tx_explorer + vote.txid, target='_blank')= vote.txid.substr(0,5)]
             if (i+1) % col_num == 0
               .clearfix
 
