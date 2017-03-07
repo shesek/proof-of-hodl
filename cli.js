@@ -24,9 +24,9 @@ const yargs = require('yargs')
   }, argv => {
     const lockbox = lock(+argv.duration, ''+argv.msg)
 
-    debug('ephemeral private key:'.cyan, lockbox.privkey)
-    debug('encumberScript:', lockbox.redeemScript)
-    console.log('Deposit funds to:'.cyan.bold, lockbox.address)
+    console.log('ephemeral private key: ', lockbox.privkey)
+    console.log('redeemScript:', lockbox.redeemScript)
+    console.log('\nDeposit funds to:'.cyan.bold, lockbox.address)
 
     watchAddr(lockbox.address, throwerr((coin, tx) => {
       const refundTx = unlock(lockbox, coin, argv.refund)
