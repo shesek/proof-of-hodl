@@ -71,8 +71,8 @@ const parseLockTx = (tx, rlocktime, pubkey) => {
 
 exports.lock = (rlocktime, msg) => {
   const privkey      = PrivateKey.generate(NETWORK)
-      , mpubkey      = deriveMsgKey(privkey, msg).toPublic()
-      , redeemScript = makeEncumberScript(mpubkey, rlocktime)
+      , childPubkey  = deriveMsgKey(privkey, msg).toPublic()
+      , redeemScript = makeEncumberScript(childPubkey, rlocktime)
       , outputScript = Script.fromScripthash(redeemScript.hash160())
       , address      = Address.fromScript(outputScript)
 
@@ -86,16 +86,16 @@ exports.lock = (rlocktime, msg) => {
 }
 
 exports.unlock = ({ privkey, rlocktime, msg }, c, refundAddr) => {
-  const mprivkey     = deriveMsgKey(PrivateKey.fromBase58(privkey), msg)
-      , redeemScript = makeEncumberScript(mprivkey.toPublic(), rlocktime)
+  const childPrivkey = deriveMsgKey(PrivateKey.fromBase58(privkey), msg)
+      , redeemScript = makeEncumberScript(childPrivkey.toPublic(), rlocktime)
       , outputScript = Script.fromScripthash(redeemScript.hash160())
       , coin         = Coin.isCoin(c) ? c : Coin.fromOptions(c)
 
-  return signUnlockTx(mprivkey, redeemScript, makeUnlockTx(coin, rlocktime, refundAddr), 0, coin)
+  return signUnlockTx(childPrivkey, redeemScript, makeUnlockTx(coin, rlocktime, refundAddr), 0, coin)
 }
 
 exports.makeProof = (tx, lockbox) => ({
-  tx:        tx.toRaw().toString('hex')
+  tx:        TX.isTX(tx) ? tx.toRaw().toString('hex') : tx
 , pubkey:    lockbox.pubkey
 , rlocktime: lockbox.rlocktime
 , msg:       lockbox.msg
@@ -104,9 +104,9 @@ exports.makeProof = (tx, lockbox) => ({
 exports.verifyProof = ({ tx: rawtx, pubkey, rlocktime, msg }) => {
   try {
     const tx = TX.isTX(rawtx) ? rawtx : TX.fromRaw(rawtx, 'hex')
-        , mpubkey = deriveMsgKey(PublicKey.fromBase58(pubkey), msg)
-        , { address, value } = parseLockTx(tx, rlocktime, mpubkey)
-    if (value) return { value, rlocktime,  msg, tx, address, weight: value*rlocktime }
+        , childPubkey = deriveMsgKey(PublicKey.fromBase58(pubkey), msg)
+        , { address, value } = parseLockTx(tx, rlocktime, childPubkey)
+    if (value) return { value, rlocktime,  msg, pubkey, tx, address, weight: value*rlocktime }
   } catch (e) { console.error(e.stack||e) }
 
   return false
