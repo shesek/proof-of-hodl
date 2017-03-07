@@ -15,7 +15,8 @@ module.exports = _ => {
       ? cb(null)
       : client.query('SELECT * FROM question_option WHERE question_id=$1', [ result.rows[0].id ], iferr(cb, oresult => {
           const question = result.rows[0]
-          question.options = oresult.rows.reduce((o, opt) => (o[opt.id]=opt, o), {  })
+          question.options = oresult.rows
+          question.options._hash = question.options.reduce((o, opt) => (o[opt.id]=opt, o), {  })
           cb(null, question)
         }
       ))))

@@ -94,8 +94,8 @@ exports.unlock = ({ privkey, rlocktime, msg }, c, refundAddr) => {
   return signUnlockTx(childPrivkey, redeemScript, makeUnlockTx(coin, rlocktime, refundAddr), 0, coin)
 }
 
-exports.makeProof = (tx, lockbox) => ({
-  tx:        TX.isTX(tx) ? tx.toRaw().toString('hex') : tx
+exports.encodeProof = (tx, lockbox) => ({
+  tx: Buffer.isBuffer(tx) ? tx.toString('hex') : TX.isTX(tx) ? tx.toRaw().toString('hex') : tx
 , pubkey:    lockbox.pubkey
 , rlocktime: lockbox.rlocktime
 , msg:       lockbox.msg

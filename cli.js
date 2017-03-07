@@ -3,7 +3,7 @@
 const round = require('round')
     , debug = require('debug')('proof-of-hodl')
     , { iferr, throwerr } = require('iferr')
-    , { lock, unlock, makeProof, verifyProof } = require('./hodl')
+    , { lock, unlock, encodeProof, verifyProof } = require('./hodl')
     , { formatSatoshis } = require('./util')
     , watchAddr = require('./watch-addr')
 
@@ -30,7 +30,7 @@ const yargs = require('yargs')
 
     watchAddr(lockbox.address, throwerr((coin, tx) => {
       const refundTx = unlock(lockbox, coin, argv.refund)
-          , proof = makeProof(tx, lockbox)
+          , proof = encodeProof(tx, lockbox)
       printBDL(coin.value, lockbox.rlocktime)
       console.log('- %s %s', 'refund tx:'.cyan.bold, refundTx.toRaw().toString('hex'))
       console.log('- %s %s', 'proof:'.cyan.bold, JSON.stringify(proof))

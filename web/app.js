@@ -3,7 +3,7 @@ const iferr      = require('iferr')
     , express    = require('express')
     , vagueTime  = require('vague-time')
     , watchAddr  = require('../watch-addr')
-    , { verifyProof } = require('../hodl')
+    , { verifyProof, encodeProof } = require('../hodl')
     , { makeVoteMsg, formatSatoshis } = require('../util')
 
 const NETWORK = process.env.NETWORK || 'testnet'
@@ -37,9 +37,9 @@ app.param('question', (req, res, next, slug) =>
   )))
 
 app.param('option', (req, res, next, id) =>
-  req.question.options[id]
-  ? (req.question_option = req.question.options[id], next())
-  : res.sendStatus(404)
+  (req.question_option = req.question.options._hash[id])
+    ? next()
+    : res.sendStatus(404)
 )
 
 if (app.settings.env != 'production') {
@@ -65,16 +65,25 @@ app.get('/txs.txt', (req, res, next) => {
 app.get('/:question', (req, res, next) =>
   loadQuestionTotals(req.question.id, iferr(next, totals =>
     loadQuestionVotes(req.question.id, iferr(next, votes =>
-        res.format({
-          html: _ => res.render('question', { totals, votes })
-        , json: _ => res.send({ question: req.question, totals
-                              , votes: votes.map(v => (v.locktx = v.locktx.toString('hex')
-                                                     , v.refundtx = v.refundtx.toString('hex')
-                                                     , v))})
-        })
+      res.format({
+        html: _ => res.render('question', { totals, votes })
+      , json: _ => res.send(Object.assign({}, req.question, {
+          options: req.question.options.map(({ id, text }) => ({ id, text, weight: totals[id] }))
+        , votes: votes.map(v => (v.refundtx = v.refundtx.toString('hex')
+                               , v.proof    = encodeVoteProof(req.question, req.question.options._hash[v.option_id], v)
+                               , v.locktx = v.pubkey = v.question_id = v.id = undefined // v.locktx.toString('hex')
+                         , v))
+        }))
+      })
     ))
   ))
 )
+
+const encodeVoteProof = (question, option, vote) => (console.log({question,option,vote}),encodeProof(vote.locktx, {
+  pubkey: vote.pubkey
+, rlocktime: vote.rlocktime
+, msg: makeVoteMsg(question, option)
+}))
 
 app.post('/:question/:option/vote', (req, res, next) => {
   const msg = makeVoteMsg(req.question, req.question_option)
