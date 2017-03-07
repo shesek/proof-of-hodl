@@ -1,5 +1,6 @@
 block vars
   - page_title = null
+  - meta_desc = 'CSV-based time-lock weighted voting for Bitcoin HODLers'
 
 doctype html5
 html
@@ -10,7 +11,7 @@ html
       meta(name='viewport', content='width=device-width, initial-scale=1')
       base(href=settings.url)
       title #{ page_title ? page_title+' - ':'' }HODL.voting
-      meta(name='description', content='HODL-weighted voting')
+      meta(name='description', content='HODL.voting - ' + meta_desc)
 
       link(href=settings.static_url+'/bootstrap/css/bootstrap.min.css', type='text/css', rel='stylesheet')
       link(href=settings.static_url+'/style.css', type='text/css', rel='stylesheet')
@@ -23,14 +24,14 @@ html
     block content
 
     footer.container
-      p.text-center: small
-        | made by #[a(href='https://www.bitrated.com/nadav') Nadav Ivgi] of #[a(href='https://www.bitrated.com/') Bitrated]
-        |  for the #[a(href='http://hack.bitembassy.org/') TLV emBassy 2017 Hackathon]
-        br
-        |  keys never leave the browser &middot; no external scripts<br>
+      p.text-center
         |  #[strong testnet] &middot;
         |  #[a(href='https://github.com/shesek/proof-of-hodl') source] &middot;
         |  #[a(href='mailto:nadav+hodl.voting@bitrated.com') contact] &middot;
         |  #[a(href='https://www.docdroid.net/rzFKS1g/proof-of-hodl.pdf.html') slides]
+      p.text-center: small
+        | made by #[a(href='https://www.bitrated.com/nadav') Nadav Ivgi] of #[a(href='https://www.bitrated.com/') Bitrated]
+        |  for the #[a(href='http://hack.bitembassy.org/') TLV emBassy 2017 Hackathon]
+        | <br>keys never leave the browser &middot; no external scripts
 
     block scripts

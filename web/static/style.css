@@ -4,7 +4,8 @@ a, a:hover { color: #158cba }
 footer { margin-top: 5em  }
 .navbar { background: #222 }
 .navbar-brand {  color: #fff !important }
-.homepage ul { font-size: 2em }
+.homepage ul { font-size: 1.8em }
+.homepage p { font-size: 1.6em }
 
 .btn-success, .btn-primary, .btn-primary:hover { background: #000 }
 
