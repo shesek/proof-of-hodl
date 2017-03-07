@@ -1,11 +1,13 @@
 pre{ word-break: break-all; white-space: normal  }
 a, a:hover { color: #158cba }
 /*.navbar-brand { font-size: 2em }*/
-footer { margin-top: 5em  }
+footer { margin-top: 3em  }
+
 .navbar { background: #222 }
 .navbar-brand {  color: #fff !important }
 .homepage ul { font-size: 1.8em }
 .homepage p { font-size: 1.6em }
+.homepage .btns { margin-top: 3em }
 
 .btn-success, .btn-primary, .btn-primary:hover { background: #000 }
 
