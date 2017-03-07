@@ -17,11 +17,13 @@ append scripts
     script(src=settings.static_url + '/q.js')
 
 block content
-  - opts = Object.keys(question.options)
-  - alltotal = opts.reduce((total, oid) => +total + (+totals[oid] || 0), 0)
-  - percents = !alltotal ? {} : opts.reduce((o, oid) => (o[oid]=round((totals[oid]||0)/alltotal*100, 0.1), o), {})
-  - grouped_votes = opts.map(oid => ({ option: question.options[oid], votes: votes.filter(v => v.option_id == oid) }))
-  - col_size = opts.length >= 3 ? 4 : 6
+  - alltotal = Object.keys(totals).reduce((total, oid) => +total + +totals[oid], 0)
+  -
+    options = question.options.map(o => (o.total   = totals[o.id]
+                                       , o.percent = alltotal&&round(o.total/alltotal*100, 0.1)
+                                       , o.votes   = votes.filter(v => v.option_id == o.id)
+                                       , o))
+  - col_size = options.length >= 3 ? 4 : 6
   - col_num  = col_size == 4 ? 3 : 2
   - opt_heading = col_size == 6 ? 'h3' : 'h4'
 
@@ -32,18 +34,17 @@ block content
       .col-md-12.results
         h2= question.text
         .row
-          for vote_group, i in grouped_votes
-            - option = vote_group.option
+          for option in options
             div(class='col-md-'+col_size).opt
               #{opt_heading} #{ option.text } &mdash; 
-                if totals[option.id]
+                if option.total
                   | #{ round(+formatSatoshis(totals[option.id] || 0)/144, 0.01) } #[abbr(title='Bitcoin Days Locked') BDL]
-                  |  (#{ percents[option.id] }%)
+                  |  (#{ option.percent }%)
                 else
                   em no votes
               button.btn.btn-success.btn-vote(data-vote=option.id) Vote
               ul
-                for vote in vote_group.votes
+                for vote in option.votes
                   li #{ formatSatoshis(vote.value) } BTC x #{ round(vote.rlocktime/144, 0.001) } days = #{ round(+formatSatoshis(vote.weight_bdl), 0.001) } 
                     abbr(title='Bitcoin Days Locked') BDL
                     br
