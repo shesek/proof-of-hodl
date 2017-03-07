@@ -32,7 +32,7 @@ present the redeeming transaction so it can be saved and broadcast when the time
 It also provides a proof that can be shared and verified using the ```verify``` command.
 
  ```bash
-$ hodl lock --duration 10 --refund [addr] 'I support SegWit'
+$ hodl lock --duration [lock duration in blocks] --refund [addr] 'I support SegWit'
 
 $ hodl verify [proof]
  ```
