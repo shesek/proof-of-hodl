@@ -9,7 +9,7 @@ footer { margin-top: 3em  }
 .homepage p { font-size: 1.6em }
 .homepage .btns { margin-top: 3em }
 
-.btn-success, .btn-primary, .btn-primary:hover { background: #000 }
+.question .btn-success, .btn-primary, .btn-primary:hover { background: #000 }
 
 .results { text-align: center }
 .results h2 { margin-bottom: 1em }

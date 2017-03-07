@@ -1,7 +1,7 @@
 const request = require('superagent')
     , qruri = require('qruri')
     , round = require('round')
-    , { coin: Coin, amount: Amount } = require('bcoin')
+    , { coin: Coin } = require('bcoin')
     , { throwerr } = require('iferr')
     , { lock, unlock } = require('../hodl')
     , { makeVoteMsg, formatSatoshis } = require('../util')
@@ -47,17 +47,19 @@ $(document.body).on('submit', 'form[data-question]', e => {
     const coin     = Coin.fromJSON(res.body.coin)
         , locktx   = res.body.tx
         , weight   = round(+formatSatoshis(coin.value * lockbox.rlocktime), 0.00001)
-        , amount   = Amount.btc(coin.value)
+        , amount   = formatSatoshis(coin.value)
         , refundtx = unlock(lockbox, coin, refund)
         , rawtx    = refundtx.toRaw().toString('hex')
 
-    dialog.modal('hide').remove()
-
-    $(successDialog({ question, option_id, coin, amount, weight, lockbox, rawtx, round })).modal()
+    dialog.find('.btn-primary').toggleClass('btn-primary btn-success')
+                               .text('Processing vote...')
+                               .attr('disabled', true)
 
     request.post(`/${ question.slug }/${ option.id }/vote`)
       .send({ tx: locktx, pubkey: lockbox.pubkey, rlocktime: lockbox.rlocktime, refundtx: rawtx })
-      .end(throwerr(res => console.log('got reply', res.body)))
+      .end(throwerr(res => (dialog.modal('hide').remove(), res.ok
+         ? $(successDialog({ question, option_id, coin, amount, weight, lockbox, rawtx, round })).modal()
+         : alert('proof-of-HODL verification failed'))))
   }))
 
 })
