@@ -88,8 +88,9 @@ app.post('/:question/:option/vote', (req, res, next) => {
   , option_id:   req.question_option.id
   , value:       proof.value
   , rlocktime:   proof.rlocktime
+  , pubkey:      proof.pubkey
   , address:     proof.address
-  , refundtx:    new Buffer(req.body.refundtx, 'hex') // @XXX verify
+  , refundtx:    new Buffer(req.body.refundtx, 'hex')
   , locktx:      proof.tx.toRaw()
   , txid:        proof.tx.txid() // @TODO vout too
   ,

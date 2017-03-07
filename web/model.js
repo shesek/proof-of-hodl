@@ -34,9 +34,9 @@ module.exports = _ => {
     ))
 
   const saveVote = (vote, cb) =>
-    client.query(`INSERT INTO vote (question_id, option_id, value, rlocktime, address, txid, locktx, refundtx)
-                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
-               , [ vote.question_id, vote.option_id, vote.value, vote.rlocktime, vote.address, vote.txid, vote.locktx, vote.refundtx ]
+    client.query(`INSERT INTO vote (question_id, option_id, value, rlocktime, pubkey, address, txid, locktx, refundtx)
+                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
+               , [ vote.question_id, vote.option_id, vote.value, vote.rlocktime, vote.pubkey, vote.address, vote.txid, vote.locktx, vote.refundtx ]
                , cb)
 
   return { listQuestions, loadQuestionBySlug, loadQuestionVotes, loadQuestionTotals, loadRefundTxs, saveVote }
