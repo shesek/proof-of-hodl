@@ -15,7 +15,9 @@ const question = JSON.parse($('meta[name=question]').attr('content'))
 
 $('[data-vote]').click(e => {
   e.preventDefault()
-  $(voteDialog({ question, option_id: $(e.target).data('vote') })).modal()
+  const option_id =  $(e.target).data('vote')
+      , option = question.options.filter(o => o.id == option_id)[0]
+  $(voteDialog({ question, option })).modal()
 })
 
 $(document.body).on('submit', 'form[data-question]', e => {
@@ -30,7 +32,7 @@ $(document.body).on('submit', 'form[data-question]', e => {
       , rlocktime = dur_type == 'days' ?0|duration*144 : duration
       , refund    = +form.find('[name=refund_addr]').val()
       , option_id = form.find('[name=answer]').val()
-      , option    = question.options[option_id]
+      , option    = question.options.filter(o => o.id == option_id)[0]
       , weight    = amount * rlocktime
 
       , msg       = makeVoteMsg(question, option)
@@ -39,7 +41,7 @@ $(document.body).on('submit', 'form[data-question]', e => {
       , pay_uri   = `bitcoin:${ lockbox.address  }?amount=${ amount }`
       , pay_qr    = qruri(pay_uri)
 
-  const dialog = $(payDialog({ question, option_id, amount, weight, lockbox, pay_uri, pay_qr, round })).modal()
+  const dialog = $(payDialog({ question, amount, weight, lockbox, pay_uri, pay_qr, round })).modal()
 
   request('/wait/'+lockbox.address, throwerr(res => {
     if (!res.ok) return alert('payment time out')
@@ -58,7 +60,7 @@ $(document.body).on('submit', 'form[data-question]', e => {
     request.post(`/${ question.slug }/${ option.id }/vote`)
       .send({ tx: locktx, pubkey: lockbox.pubkey, rlocktime: lockbox.rlocktime, refundtx: rawtx })
       .end(throwerr(res => (dialog.modal('hide').remove(), res.ok
-         ? $(successDialog({ question, option_id, coin, amount, weight, lockbox, rawtx, round })).modal()
+         ? $(successDialog({ question, option, coin, amount, weight, lockbox, rawtx, round })).modal()
          : alert('proof-of-HODL verification failed'))))
   }))
 

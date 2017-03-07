@@ -5,11 +5,6 @@
         button.close(type='button', data-dismiss='modal'): span(aria-hidden='true') &times;
         h4.modal-title Vote Deposit
       .modal-body
-        //-p #[strong Question:] #{question.text}
-        //-p #[strong Your vote:] #{ question.options[option_id].text }
-        //-p #[strong Vote weight:] #{ amount } BTC x #{ round(lockbox.rlocktime/144, 0.01) } days = 
-          strong #{round(weight/144, 0.01)} #[abbr(title='Bitcoin Days Locked') BDL]
-
         p.text-center Send #[strong= amount] BTC to #[strong= lockbox.address]
         .text-center
           img.center-block(src=pay_qr)

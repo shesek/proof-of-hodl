@@ -4,12 +4,9 @@
       .modal-content
         .modal-header
           button.close(type='button', data-dismiss='modal'): span(aria-hidden='true') &times;
-          h4.modal-title Cast Vote: #[em= question.options[option_id].text]
+          h4.modal-title Cast Vote: #[em= option.text]
         .modal-body
-          //p #[strong Question:] #{question.text}
-          //p #[strong Your vote:] #{ question.options[option_id].text }
-
-          input(name='answer', type='hidden', value=option_id)
+          input(name='answer', type='hidden', value=option.id)
           .row
             .form-group.col-md-6
               label(for='amount') Deposit amount
