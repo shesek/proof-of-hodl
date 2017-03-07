@@ -1,13 +1,3 @@
-/*import Rx, { Observable as O } from 'rx'
-import { run } from '@cycle/rx-run'
-import io from 'socket.io-client'
-import { makeDOMDriver, button, a, h } from '@cycle/dom'
-import { makeSocketDriver, dbgStreams } from './util'
-
-const main = ({ DOM, socket }) => {
-  const vote$ = DOM.select('[data-vote]').events('click').map(e => e.target.getAttribute('data-vote'))
-}*/
-
 const request = require('superagent')
     , qruri = require('qruri')
     , round = require('round')
@@ -48,8 +38,6 @@ $(document.body).on('submit', 'form[data-question]', e => {
 
       , pay_uri   = `bitcoin:${ lockbox.address  }?amount=${ amount }`
       , pay_qr    = qruri(pay_uri)
-
-  console.log(lockbox)
 
   const dialog = $(payDialog({ question, option_id, amount, weight, lockbox, pay_uri, pay_qr, round })).modal()
 
