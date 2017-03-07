@@ -56,18 +56,17 @@ const signUnlockTx = (privkey, redeemScript, tx, vin, coin) => {
   return mtx.toTX()
 }
 
-const verifyLockTx = (tx, rlocktime, pubkey) => {
+const parseLockTx = (tx, rlocktime, pubkey) => {
   const redeemScript = makeEncumberScript(pubkey, rlocktime)
       , outputScript = Script.fromScripthash(redeemScript.hash160())
-      , address      = Address.fromScript(outputScript)
-      , address58    = address.toBase58(NETWORK)
+      , address      = Address.fromScript(outputScript).toBase58(NETWORK)
       , value        = tx.outputs.reduce((total, out) =>
-          address58 === Address.fromScript(out.script).toBase58(NETWORK)
+          address === Address.fromScript(out.script).toBase58(NETWORK)
             ? total + out.value
             : total
         , 0)
 
-  return { address, tx, txid: tx.txid(), value, rlocktime, weight: value*rlocktime }
+  return { address, value }
 }
 
 exports.lock = (rlocktime, msg) => {
@@ -103,7 +102,12 @@ exports.makeProof = (tx, lockbox) => ({
 })
 
 exports.verifyProof = ({ tx: rawtx, pubkey, rlocktime, msg }) => {
-  const tx = TX.isTX(rawtx) ? rawtx : TX.fromRaw(rawtx, 'hex')
-      , mpubkey = deriveMsgKey(PublicKey.fromBase58(pubkey), msg)
-  return Object.assign(verifyLockTx(tx, rlocktime, mpubkey), { msg })
+  try {
+    const tx = TX.isTX(rawtx) ? rawtx : TX.fromRaw(rawtx, 'hex')
+        , mpubkey = deriveMsgKey(PublicKey.fromBase58(pubkey), msg)
+        , { address, value } = parseLockTx(tx, rlocktime, mpubkey)
+    if (value) return { value, rlocktime,  msg, tx, address, weight: value*rlocktime }
+  } catch (e) { console.error(e.stack||e) }
+
+  return false
 }

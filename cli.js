@@ -39,14 +39,12 @@ const yargs = require('yargs')
   })
 
   .command('verify [proof]', 'verify proof', {}, argv => {
-    const proof = JSON.parse(argv.proof)
-        , { txid, value, rlocktime, weight, address, msg } = verifyProof(proof)
-    if (value) {
-      console.log(typeof txid)
-      console.log('- %s %s\n  '+'(NOTE: this proof is only valid if this txid is mined!)'.red, 'lock txid:'.cyan.bold, txid)
-      console.log('- %s %s', 'address:'.cyan.bold, address)
-      printBDL(value, rlocktime, weight)
-      console.log('- %s %s', 'msg:'.cyan.bold, msg)
+    const p = verifyProof(JSON.parse(argv.proof))
+    if (p) {
+      console.log('- %s %s\n  '+'(NOTE: this proof is only valid if this txid is mined!)'.red, 'lock txid:'.cyan.bold, p.tx.txid())
+      console.log('- %s %s', 'address:'.cyan.bold, p.address)
+      printBDL(p.value, p.rlocktime, p.weight)
+      console.log('- %s %s', 'msg:'.cyan.bold, p.msg)
     } else {
       console.log('invalid proof!'.red.bold)
     }

@@ -77,23 +77,21 @@ app.get('/:question', (req, res, next) =>
 )
 
 app.post('/:question/:option/vote', (req, res, next) => {
-  const { tx: rawtx, pubkey, rlocktime } = req.body
-      , msg = makeVoteMsg(req.question, req.question_option)
+  const msg = makeVoteMsg(req.question, req.question_option)
+      , proof = verifyProof(Object.assign({ msg }, req.body))
 
-  try { var { tx: locktx, value, address } = verifyProof({ tx: rawtx, pubkey, rlocktime, msg }) }
-  catch (err) { console.error(err); return res.sendStatus(400) }
-
-  if (!value) return res.sendStatus(400)
+  if (!proof)
+    return res.sendStatus(402)
 
   saveVote({
     question_id: req.question.id
-  , option_id: req.question_option.id
-  , value: value
-  , rlocktime: rlocktime
-  , address: address.toBase58(NETWORK)
-  , refundtx: new Buffer(req.body.refundtx, 'hex') // @XXX verify
-  , locktx: locktx.toRaw()
-  , txid:   locktx.txid() // @TODO vout too
+  , option_id:   req.question_option.id
+  , value:       proof.value
+  , rlocktime:   proof.rlocktime
+  , address:     proof.address
+  , refundtx:    new Buffer(req.body.refundtx, 'hex') // @XXX verify
+  , locktx:      proof.tx.toRaw()
+  , txid:        proof.tx.txid() // @TODO vout too
   ,
   }, iferr(next, _ => res.sendStatus(201)))
 })
