@@ -83,6 +83,8 @@ app.post('/:question/:option/vote', (req, res, next) => {
   try { var { tx: locktx, value, address } = verifyProof({ tx: rawtx, pubkey, rlocktime, msg }) }
   catch (err) { console.error(err); return res.sendStatus(400) }
 
+  if (!value) return res.sendStatus(400)
+
   saveVote({
     question_id: req.question.id
   , option_id: req.question_option.id

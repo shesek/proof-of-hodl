@@ -50,7 +50,6 @@ const yargs = require('yargs')
     } else {
       console.log('invalid proof!'.red.bold)
     }
-    process.exit()
   })
 
   .help()
