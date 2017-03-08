@@ -79,11 +79,11 @@ app.get('/:question', (req, res, next) =>
   ))
 )
 
-const encodeVoteProof = (question, option, vote) => (console.log({question,option,vote}),encodeProof(vote.locktx, {
+const encodeVoteProof = (question, option, vote) => encodeProof(vote.locktx, {
   pubkey: vote.pubkey
 , rlocktime: vote.rlocktime
 , msg: makeVoteMsg(question, option)
-}))
+})
 
 app.post('/:question/:option/vote', (req, res, next) => {
   const msg = makeVoteMsg(req.question, req.question_option)
