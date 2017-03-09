@@ -30,15 +30,15 @@ html
     block content
 
     footer.container
-      p.text-center
+      p.menu
         | #[strong testnet] &middot;
         if json_url
           |  #[a(href=json_url) json] &middot;
         |  #[a(href='https://github.com/shesek/proof-of-hodl') source] &middot;
         |  #[a(href='mailto:nadav+hodl.voting@bitrated.com') contact] &middot;
         |  #[a(href='https://www.docdroid.net/rzFKS1g/proof-of-hodl.pdf.html') slides]
-      p.text-center: small
-        | made by #[a(href='https://www.bitrated.com/nadav') Nadav Ivgi] of #[a(href='https://www.bitrated.com/') Bitrated]
+      p.note
+        | built by #[a(href='https://www.bitrated.com/nadav') Nadav Ivgi] of #[a(href='https://www.bitrated.com/') Bitrated]
         |  for the #[a(href='http://hack.bitembassy.org/') TLV emBassy 2017 Hackathon]
         | <br>keys never leave the browser &middot; no external scripts
 

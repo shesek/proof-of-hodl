@@ -1,7 +1,5 @@
 pre{ word-break: break-all; white-space: normal  }
 a, a:hover { color: #158cba }
-/*.navbar-brand { font-size: 2em }*/
-footer { margin-top: 3em  }
 
 .navbar { background: #222 }
 .navbar-brand {  color: #fff !important }
@@ -25,3 +23,7 @@ footer { margin-top: 3em  }
     width: 100%;
 }
 .navbar-brand {float:none;}
+
+footer { text-align:center; margin-top: 3em }
+footer .menu { font-size: 1.3em  }
+
