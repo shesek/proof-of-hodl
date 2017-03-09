@@ -1,6 +1,7 @@
 block vars
   - page_title = null
-  - meta_desc = 'time-lock (CSV) voting for provable long-term bitcoin HODLers'
+  - full_title = null
+  - meta_desc = 'time-locked (CSV) voting for provable long-term bitcoin HODLers'
   - json_url = null
 
 doctype html5
@@ -12,7 +13,7 @@ html
       meta(name='viewport', content='width=device-width, initial-scale=1')
       base(href=settings.url)
 
-      - full_title = (page_title ? page_title+' - ':'') + 'HODL.voting'
+      - full_title = full_title || (page_title ? page_title+' – ':'') + 'HODL.voting'
       title= full_title
       meta(name='description', content=meta_desc)
       meta(name='twitter:card', content='summary')
