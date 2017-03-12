@@ -12,7 +12,7 @@ const ADDR_WATCH_TIMEOUT = 10 * 60 * 1000
 
 const { listQuestions, loadQuestionBySlug, loadQuestionVotes, loadRefundTxs, saveVote } = require('./model')()
 
-const findOption = (question, oid) => question.options.filter(o => o.id === oid)[0]
+const findOption = (question, oid) => question.options.filter(o => o.id == oid)[0]
 
 const app = express()
 
