@@ -17,13 +17,7 @@ append scripts
     script(src=settings.static_url + '/q.js')
 
 block content
-  - alltotal = Object.keys(totals).reduce((total, oid) => +total + +totals[oid], 0)
-  -
-    options = question.options.map(o => (o.total   = totals[o.id]
-                                       , o.percent = o.total ? round(o.total/alltotal*100, 0.1) : 0
-                                       , o.votes   = votes.filter(v => v.option_id == o.id)
-                                       , o))
-  - col_size = options.length >= 3 ? 4 : 6
+  - col_size = question.options.length >= 3 ? 4 : 6
   - col_num  = col_size == 4 ? 3 : 2
   - opt_heading = col_size == 6 ? 'h3' : 'h4'
 
@@ -34,18 +28,18 @@ block content
       .col-md-12.results
         h2= question.text
         .row
-          for option in options
+          for option in question.options
             div(class='col-md-'+col_size).opt
               #{opt_heading} #{ option.text } &mdash; 
-                if option.total
-                  | #{ round(+formatSatoshis(totals[option.id] || 0)/144, 0.01) } #[abbr(title='Bitcoin Days Locked') BDL]
-                  |  (#{ option.percent }%)
+                if option.total_bdl
+                  | #{ round(option.total_bdl, 0.01) } #[abbr(title='Bitcoin Days Locked') BDL]
+                  |  (#{ round(option.total_bdl / question.total_bdl * 100, 0.1) }%)
                 else
                   em no votes
               button.btn.btn-success.btn-vote(data-vote=option.id) Vote
               ul
-                for vote in option.votes
-                  li #{ formatSatoshis(vote.value) } BTC x #{ round(vote.rlocktime/144, 0.001) } days = #{ round(+formatSatoshis(vote.weight_bdl), 0.001) } 
+                for vote in votes.filter(v => v.option_id == option.id)
+                  li #{ formatSatoshis(vote.value) } BTC x #{ round(vote.rlocktime/144, 0.001) } days = #{ round(vote.weight_bdl, 0.001) } 
                     abbr(title='Bitcoin Days Locked') BDL
                     br
                     .text-muted

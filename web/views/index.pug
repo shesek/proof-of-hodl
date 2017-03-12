@@ -15,7 +15,7 @@ block content
       for question in questions
         li
           a(href="/"+question.slug) #{ question.text } 
-          | &mdash; #{ round(+formatSatoshis(question.total_weight/144), 0.01) } #[abbr(title='Bitcoin Days Locked') BDL]
+          | &mdash; #{ round(question.total_bdl, 0.01) } #[abbr(title='Bitcoin Days Locked') BDL]
     //-.text-center.btns
       a.btn.btn-default(href='mailto:nadav+hodl.voting@bitrated.com') Suggest questions
       = ' '

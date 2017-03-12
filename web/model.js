@@ -5,29 +5,20 @@ module.exports = _ => {
   const client = new pg.Client // uses PGUSER, PGDATABASE, PGPASSWORD, PGPORT
   client.connect(throwerr(_ => console.log('Connected to postgres')))
 
+  client.query = (query => (...a) => (console.log('query',a),query.apply(client,a)   ))(client.query)
+
   const listQuestions = cb =>
-    client.query('SELECT * FROM v_question ORDER BY total_weight DESC', iferr(cb, result =>
+    client.query('SELECT id, slug, text, total_bdl FROM v_question ORDER BY total_bdl DESC', iferr(cb, result =>
       cb(null, result.rows)))
 
   const loadQuestionBySlug = (slug, cb) =>
-    client.query('SELECT * FROM question WHERE slug=$1', [ slug ], iferr(cb, result =>
-      !result.rows.length
-      ? cb(null)
-      : client.query('SELECT * FROM question_option WHERE question_id=$1', [ result.rows[0].id ], iferr(cb, oresult => {
-          const question = result.rows[0]
-          question.options = oresult.rows
-          question.options._hash = question.options.reduce((o, opt) => (o[opt.id]=opt, o), {  })
-          cb(null, question)
-        }
-      ))))
+    client.query('SELECT * FROM v_question WHERE slug=$1', [ slug ], iferr(cb, result =>
+      cb(null, result.rows[0])
+      ))
 
   const loadQuestionVotes = (question_id, cb) =>
     client.query('SELECT * FROM v_vote WHERE question_id = $1', [ question_id ], iferr(cb, result =>
       cb(null, result.rows)))
-
-  const loadQuestionTotals = (question_id, cb) =>
-    client.query('SELECT * FROM vote_totals WHERE question_id=$1', [ question_id ], iferr(cb, result =>
-      cb(null, result.rows.reduce((o, t) => (o[t.option_id]=t.total, o), {}))))
 
   const loadRefundTxs = cb =>
     client.query('SELECT address, txid, refundtx FROM vote ORDER BY id DESC', iferr(cb, result =>
@@ -40,5 +31,5 @@ module.exports = _ => {
                , [ vote.question_id, vote.option_id, vote.value, vote.rlocktime, vote.pubkey, vote.address, vote.txid, vote.locktx, vote.refundtx ]
                , cb)
 
-  return { listQuestions, loadQuestionBySlug, loadQuestionVotes, loadQuestionTotals, loadRefundTxs, saveVote }
+  return { listQuestions, loadQuestionBySlug, loadQuestionVotes, loadRefundTxs, saveVote }
 }
