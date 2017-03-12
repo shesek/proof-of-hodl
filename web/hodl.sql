@@ -20,7 +20,7 @@ create or replace view v_question_option as
 
 create or replace view v_question as
   select q.*,
-    json_agg(json_build_object('id', o.id, 'text', o.text, 'total_weight', o.total_weight::varchar, 'total_bdl', o.total_bdl::varchar)) as options,
+    json_agg(json_build_object('option_id', o.id, 'text', o.text, 'total_weight', o.total_weight::varchar, 'total_bdl', o.total_bdl::varchar)) as options,
     sum(o.total_weight) as total_weight, sum(o.total_bdl) as total_bdl
   from question q
   left join v_question_option o on o.question_id = q.id
