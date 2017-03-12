@@ -33,7 +33,7 @@ block content
               #{opt_heading} #{ option.text } &mdash; 
                 if option.total_bdl
                   | #{ round(option.total_bdl, 0.01) } #[abbr(title='Bitcoin Days Locked') BDL]
-                  |  (#{ round(option.total_bdl / question.total_bdl * 100, 0.1) }%)
+                  |  (#{ round(option.total_weight / question.total_weight * 100, 0.1) }%)
                 else
                   em no votes
               button.btn.btn-success.btn-vote(data-vote=option.id) Vote
