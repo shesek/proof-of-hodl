@@ -28,7 +28,7 @@ block content
       .col-md-12.results
         h2= question.text
         .row
-          for option in question.options
+          for option, i in question.options
             div(class='col-md-'+col_size).opt
               #{opt_heading} #{ option.text } &mdash; 
                 if option.total_bdl
