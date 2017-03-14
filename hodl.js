@@ -1,7 +1,16 @@
-const bcoin = require('bcoin')
-    , { script: Script, opcode: Opcode, address: Address, coin: Coin, keyring: KeyRing
-      , tx: TX, mtx: MTX, bn: BN, crypto: Crypto, ec: EC } = bcoin
-    , { PrivateKey, PublicKey } = bcoin.hd
+const Address = require('bcoin/lib/primitives/address')
+    , KeyRing = require('bcoin/lib/primitives/keyring')
+    , Crypto  = require('bcoin/lib/crypto')
+    , Opcode  = require('bcoin/lib/script/opcode')
+    , Script  = require('bcoin/lib/script/script')
+    , Coin    = require('bcoin/lib/primitives/coin')
+    , MTX     = require('bcoin/lib/primitives/mtx')
+    , TX      = require('bcoin/lib/primitives/tx')
+    , EC      = require('bcoin/lib/crypto/ec')
+    , HD      = require('bcoin/lib/hd')
+    , BN      = require('bcoin/node_modules/bn.js')
+
+    , { PrivateKey, PublicKey } = HD
     , { hashType } = Script
     , { OP_CHECKSEQUENCEVERIFY, OP_DROP, OP_CHECKSIG, OP_0 } = Script.opcodes
 

@@ -1,7 +1,7 @@
 const request = require('superagent')
     , qruri = require('qruri')
     , round = require('round')
-    , { coin: Coin } = require('bcoin')
+    , Coin= require('bcoin/lib/primitives/coin')
     , { throwerr } = require('iferr')
     , { lock, unlock } = require('../hodl')
     , { makeVoteMsg, formatSatoshis } = require('../util')
