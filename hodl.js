@@ -8,7 +8,7 @@ const Address = require('bcoin/lib/primitives/address')
     , TX      = require('bcoin/lib/primitives/tx')
     , EC      = require('bcoin/lib/crypto/ec')
     , HD      = require('bcoin/lib/hd')
-    , BN      = require('bcoin/node_modules/bn.js')
+    , BN      = require('bn.js')
 
     , { PrivateKey, PublicKey } = HD
     , { hashType } = Script
