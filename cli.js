@@ -2,12 +2,27 @@
 
 const round = require('round')
     , debug = require('debug')('proof-of-hodl')
+    , inquirer = require('inquirer')
+    , TX       = require('bcoin/lib/primitives/tx')
+    , Coin     = require('bcoin/lib/primitives/coin')
     , { iferr, throwerr } = require('iferr')
     , { lock, unlock, encodeProof, verifyProof } = require('./hodl')
     , { formatSatoshis } = require('./util')
-    , watchAddr = require('./watch-addr')
+
+const NETWORK = process.env.NETWORK || 'testnet'
 
 require('colors')
+
+const promptCoin = (addr, cb) =>
+  inquirer.prompt([{ name: 'rawtx', message: 'the lock tx in raw hex format' }])
+    .then(answers => {
+      const tx = TX.fromRaw(answers.rawtx.replace(/\s+/g, ''), 'hex')
+      tx.outputs.some((out, outv) =>
+        out.getAddress().toBase58(NETWORK) == addr
+          ? (cb(null, Coin.fromTX(tx, outv, -1), tx), true)
+          : false
+        ) || cb(new Error('invalid tx'))
+    })
 
 const printBDL = (value, rlocktime, weight=value*rlocktime) =>
   console.log('- %s %s BTC x %s days = %s (%s satoshi-blocks)', 'value:'.cyan.bold
@@ -28,7 +43,7 @@ const yargs = require('yargs')
     console.log('redeemScript:', lockbox.redeemScript)
     console.log('\nDeposit funds to:'.cyan.bold, lockbox.address)
 
-    watchAddr(lockbox.address, throwerr((coin, tx) => {
+    promptCoin(lockbox.address, throwerr((coin, tx) => {
       const refundTx = unlock(lockbox, coin, argv.refund)
           , proof = encodeProof(tx, lockbox)
       printBDL(coin.value, lockbox.rlocktime)
