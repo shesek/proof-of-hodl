@@ -1,15 +1,15 @@
 const request = require('superagent')
-    , qruri = require('qruri')
-    , round = require('round')
-    , Coin= require('bcoin/lib/primitives/coin')
-    , { throwerr } = require('iferr')
-    , { lock, unlock } = require('../hodl')
-    , { makeVoteMsg, formatSatoshis } = require('../util')
+    , qruri   = require('qruri')
+    , round   = require('round')
+    , Coin    = require('bcoin/lib/primitives/coin')
+    , { throwerr }       = require('iferr')
+    , { lock, unlock }   = require('../hodl')
+    , { formatSatoshis } = require('../util')
+    , { makeVoteMsg }    = require('./util')
 
 const voteDialog    = require('./views/vote-dialog.pug')
 const payDialog     = require('./views/pay-dialog.pug')
 const successDialog = require('./views/success-dialog.pug')
-
 
 const question = JSON.parse($('meta[name=question]').attr('content'))
 

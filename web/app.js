@@ -4,7 +4,8 @@ const iferr      = require('iferr')
     , vagueTime  = require('vague-time')
     , watchAddr  = require('../watch-addr')
     , { verifyProof, encodeProof } = require('../hodl')
-    , { makeVoteMsg, formatSatoshis } = require('../util')
+    , { formatSatoshis } = require('../util')
+    , { makeVoteMsg } = require('./util')
 
 const NETWORK = process.env.NETWORK || 'testnet'
 
