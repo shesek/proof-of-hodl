@@ -1,16 +1,13 @@
 const Address = require('bcoin/lib/primitives/address')
     , KeyRing = require('bcoin/lib/primitives/keyring')
     , Crypto  = require('bcoin/lib/crypto')
-    , Opcode  = require('bcoin/lib/script/opcode')
     , Script  = require('bcoin/lib/script/script')
     , Coin    = require('bcoin/lib/primitives/coin')
     , MTX     = require('bcoin/lib/primitives/mtx')
     , TX      = require('bcoin/lib/primitives/tx')
     , EC      = require('bcoin/lib/crypto/ec')
-    , HD      = require('bcoin/lib/hd')
     , BN      = require('bn.js')
-    , { hashType } = Script
-    , { OP_CHECKSEQUENCEVERIFY, OP_DROP, OP_CHECKSIG, OP_0 } = Script.opcodes
+    , { OP_CHECKSEQUENCEVERIFY, OP_DROP, OP_CHECKSIG } = Script.opcodes
 
 const NETWORK = process.env.NETWORK || 'testnet'
     , FEE     = 10000
@@ -45,7 +42,7 @@ const makeUnlockTx = (coin, rlocktime, refundAddr) => TX.fromOptions({
 const signUnlockTx = (privkey, redeemScript, tx, vin, coin) => {
   const mtx = MTX.fromTX(tx)
   mtx.inputs[vin].script = Script.fromArray([
-    mtx.signature(vin, redeemScript, coin.value, privkey, hashType.ALL, 0)
+    mtx.signature(vin, redeemScript, coin.value, privkey, Script.hashType.ALL, 0)
   , redeemScript.toRaw()
   ])
   return mtx.toTX()
