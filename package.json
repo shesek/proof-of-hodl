@@ -1,7 +1,7 @@
 {
   "name": "hodl",
   "description": "Proof of HODL - provable bitcoin time-lock",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "Nadav Ivgi",
   "license": "ISC",
   "bin": "./cli.js",
